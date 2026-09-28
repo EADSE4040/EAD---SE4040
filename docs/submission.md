@@ -1,6 +1,6 @@
 # Submission checklist
 
-- Record four member names, IT numbers, real contributions and relevant commits.
+- Record the confirmed three member names, IT numbers, real contributions and relevant commits; confirm the group-size arrangement with the lecturer.
 - Include the final project directories and report in a single ZIP named with the required IT number.
 - Include a unique screenshot of the opening screen and every implemented UI, including Android.
 - Include rendered architecture, use-case and data-flow diagrams, database design, references and challenges.

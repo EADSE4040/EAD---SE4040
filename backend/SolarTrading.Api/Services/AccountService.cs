@@ -33,17 +33,27 @@ public sealed class AccountService(MongoStore db, IConfiguration config)
              new Claim("version", user.TokenVersion.ToString())], expires: expiry,
             signingCredentials: new SigningCredentials(new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(config["Jwt:Key"]!)), SecurityAlgorithms.HmacSha256));
-        return new { token = new JwtSecurityTokenHandler().WriteToken(token), expiresAt = expiry,
-            user = UserView.From(user) };
+        return new
+        {
+            token = new JwtSecurityTokenHandler().WriteToken(token),
+            expiresAt = expiry,
+            user = UserView.From(user)
+        };
     }
 
     // Register a pending prosumer with a normalized NIC as the Mongo primary key.
     public async Task<UserView> Register(RegisterRequest input, bool active, CancellationToken ct)
     {
-        var user = new User { Id = input.Nic.Trim().ToUpperInvariant(),
-            Nic = input.Nic.Trim().ToUpperInvariant(), Name = input.Name.Trim(),
-            Email = input.Email.Trim().ToLowerInvariant(), Phone = input.Phone.Trim(),
-            Address = input.Address.Trim(), Status = active ? "Active" : "Pending" };
+        var user = new User
+        {
+            Id = input.Nic.Trim().ToUpperInvariant(),
+            Nic = input.Nic.Trim().ToUpperInvariant(),
+            Name = input.Name.Trim(),
+            Email = input.Email.Trim().ToLowerInvariant(),
+            Phone = input.Phone.Trim(),
+            Address = input.Address.Trim(),
+            Status = active ? "Active" : "Pending"
+        };
         user.PasswordHash = hasher.HashPassword(user, input.Password);
         try { await db.Users.InsertOneAsync(user, cancellationToken: ct); }
         catch (MongoWriteException e) when (e.WriteError.Category == ServerErrorCategory.DuplicateKey)
@@ -54,8 +64,13 @@ public sealed class AccountService(MongoStore db, IConfiguration config)
     // Create a staff account; caller authorization is enforced by the controller.
     public async Task<UserView> CreateStaff(StaffRequest input, CancellationToken ct)
     {
-        var user = new User { Name = input.Name.Trim(), Email = input.Email.Trim().ToLowerInvariant(),
-            Role = input.Role, Status = "Active" };
+        var user = new User
+        {
+            Name = input.Name.Trim(),
+            Email = input.Email.Trim().ToLowerInvariant(),
+            Role = input.Role,
+            Status = "Active"
+        };
         user.PasswordHash = hasher.HashPassword(user, input.Password);
         try { await db.Users.InsertOneAsync(user, cancellationToken: ct); }
         catch (MongoWriteException e) when (e.WriteError.Category == ServerErrorCategory.DuplicateKey)

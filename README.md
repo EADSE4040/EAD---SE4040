@@ -28,6 +28,8 @@ The workspace-local `.tools/` directory is ignored; downloaded SDKs, database fi
 
 ## Run locally
 
+For this already-provisioned workspace, `powershell -ExecutionPolicy Bypass -File scripts/start-local.ps1` starts or reuses the local MongoDB, API and web services. For a fresh machine, install the prerequisites and follow the steps below.
+
 1. Start a MongoDB replica set. See [deployment instructions](docs/deployment/iis.md) and use a separate database for testing.
 2. Run `powershell -ExecutionPolicy Bypass -File scripts/configure-local.ps1`. This creates ignored local configuration and random secrets. Administrator credentials are saved privately in `.tools/dev-credentials.json`.
 3. Run `dotnet run --project backend/SolarTrading.Api`. When using the downloaded portable SDK, use `.tools/dotnet/dotnet.exe` instead of `dotnet`.
@@ -66,11 +68,13 @@ The test runner creates and drops only a randomly named test database. The `--in
 
 For IIS release output, run `scripts/publish.ps1 -ApiUrl https://YOUR_API_HOST/api`, then follow [IIS deployment](docs/deployment/iis.md). This command generates artifacts; it does not configure IIS or deploy them automatically.
 
+For this Windows PC, run `scripts/prepare-iis.ps1` to build the loopback deployment and download/verify Microsoft's Hosting Bundle. Then run `scripts/setup-iis.ps1` from **administrator Windows PowerShell**. It creates dedicated `SolaraApi` and `SolaraWeb` sites at `http://127.0.0.1:8080` and `http://127.0.0.1:8081`, preserving existing sites. Keep the local MongoDB running. Use `http://10.0.2.2:8080/api` in an Android emulator debug build; release and device-network deployments require the HTTPS configuration above.
+
 ## Assessment and submission
 
 Read [assignment checklist](docs/planning/assignment-checklist.md), [system design](docs/design.md), and [submission checklist](docs/submission.md). A passing build is not proof of IIS hosting, device features, or viva readiness.
 
-Individual contributions: **awaiting the four members' names, IT numbers and actual contribution details**. Record each person's real work and commits; do not fabricate ownership.
+Confirmed three-member group: Kojithan P.Y (IT22264220), Baskaran V (IT22172600), Nishara T (IT22223876). Actual contributions remain outstanding. See [contribution record](docs/contributions.md).
 
 Demo video (maximum five minutes): **awaiting recording and upload by the team**.
 

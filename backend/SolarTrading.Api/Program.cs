@@ -32,12 +32,18 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     // Validate issuer, audience, signature, expiry and current account state for every authenticated request.
     options.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidateIssuer = true, ValidateAudience = true, ValidateIssuerSigningKey = true,
-        ValidateLifetime = true, ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidAudience = builder.Configuration["Jwt:Audience"], ClockSkew = TimeSpan.FromSeconds(15),
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateIssuerSigningKey = true,
+        ValidateLifetime = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        ClockSkew = TimeSpan.FromSeconds(15),
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
     };
-    options.Events = new JwtBearerEvents { OnTokenValidated = async context =>
+    options.Events = new JwtBearerEvents
+    {
+        OnTokenValidated = async context =>
     {
         // Re-check activation and token version so deactivation immediately invalidates old sessions.
         var id = context.Principal?.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -46,7 +52,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         var user = await db.Users.Find(x => x.Id == id).FirstOrDefaultAsync(context.HttpContext.RequestAborted);
         if (user is null || user.Status != "Active" || user.TokenVersion.ToString() != version)
             context.Fail("Account is inactive or this session has been revoked.");
-    } };
+    }
+    };
 });
 builder.Services.AddAuthorization();
 builder.Services.AddRateLimiter(options =>

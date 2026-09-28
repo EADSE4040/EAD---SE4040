@@ -24,8 +24,16 @@ public sealed class ReservationService(MongoStore db, GridService grid, TimeProv
             await RequireProsumer(session, id, token);
             var slot = await Claim(session, input.SlotId, input.EnergyKwh, token);
             BusinessRules.BookingWindow(slot.Start, clock.GetUtcNow().UtcDateTime);
-            var r = new Reservation { ProsumerId = id, SlotId = slot.Id, StationId = slot.StationId,
-                Start = slot.Start, End = slot.End, EnergyKwh = input.EnergyKwh, Direction = input.Direction };
+            var r = new Reservation
+            {
+                ProsumerId = id,
+                SlotId = slot.Id,
+                StationId = slot.StationId,
+                Start = slot.Start,
+                End = slot.End,
+                EnergyKwh = input.EnergyKwh,
+                Direction = input.Direction
+            };
             await db.Reservations.InsertOneAsync(session, r, cancellationToken: token);
             await db.Log(session, actor, "Reservation:Create", r.Id, token);
             return r;
@@ -155,7 +163,7 @@ public sealed class ReservationService(MongoStore db, GridService grid, TimeProv
                 | Builders<Reservation>.Filter.Regex(x => x.ProsumerId, new MongoDB.Bson.BsonRegularExpression(escaped, "i"))
                 | Builders<Reservation>.Filter.In(x => x.StationId, stationIds);
         }
-        page = Math.Max(1, page); pageSize = Math.Clamp(pageSize, 1, 100);
+        page = Math.Clamp(page, 1, 1000000); pageSize = Math.Clamp(pageSize, 1, 100);
         var total = await db.Reservations.CountDocumentsAsync(f, cancellationToken: ct);
         var rows = await db.Reservations.Find(f).SortByDescending(x => x.CreatedAt)
             .Skip((page - 1) * pageSize).Limit(pageSize).ToListAsync(ct);

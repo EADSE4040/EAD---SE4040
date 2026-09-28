@@ -16,14 +16,9 @@ try {
         New-Item -ItemType Directory -Path (Split-Path $destination -Parent) -Force | Out-Null
         Copy-Item -LiteralPath $source -Destination $destination
     }
-    $report=[IO.File]::ReadAllText((Join-Path $repo 'docs/design.md'))
-    $report += "`n`n# Source code appendix`n`n"
-    foreach($relative in $files | Where-Object { $_ -match '\.(cs|java|jsx|js|css|xml|gradle)$' -and $_ -notmatch 'gradlew|gradle/wrapper' }) {
-        $language=[IO.Path]::GetExtension($relative).TrimStart('.')
-        $fence=[string]::new([char]96,4)
-        $report += "`n## $relative`n`n$fence$language`n"+[IO.File]::ReadAllText((Join-Path $repo $relative))+"`n$fence`n"
-    }
-    [IO.File]::WriteAllText((Join-Path $staging 'report-with-source.md'),$report)
+    & node (Join-Path $repo 'scripts/generate-report.mjs')
+    if ($LASTEXITCODE -ne 0) { throw 'Report generation failed.' }
+    Copy-Item -LiteralPath (Join-Path $artifactDir 'report-with-source.md') -Destination (Join-Path $staging 'report-with-source.md')
     $zip=Join-Path $artifactDir ($ITNumber+'.zip')
     if(Test-Path -LiteralPath $zip){throw 'A submission ZIP already exists; choose explicitly whether to replace it.'}
     Compress-Archive -Path (Join-Path $staging '*') -DestinationPath $zip

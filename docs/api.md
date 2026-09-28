@@ -13,7 +13,7 @@ Base path: `/api`. JSON uses camelCase. Authenticated requests send `Authorizati
 | POST /users/prosumers | Backoffice | Create active prosumer |
 | PUT /users/{id} | Backoffice | Edit prosumer |
 | POST /users/{id}/activate, deactivate | Backoffice | Account lifecycle |
-| GET /stations | Any active role | Persisted node list |
+| GET /stations | Any active role | Persisted nodes; optional latitude/longitude/radiusKm (default 25 km) nearby filtering |
 | POST /stations | Backoffice | Register node |
 | PUT /stations/{id} | Staff | Update specifications/schedule |
 | POST /stations/{id}/activate, deactivate | Backoffice | Node lifecycle |

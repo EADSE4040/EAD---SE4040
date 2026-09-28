@@ -4,7 +4,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-feature android:name="android.hardware.camera" android:required="false" />
-    <application android:label="Solara" android:theme="@style/AppTheme" android:allowBackup="false" android:usesCleartextTraffic="false" android:supportsRtl="true">
+    <application android:label="Solara" android:icon="@drawable/ic_solara" android:theme="@style/AppTheme" android:allowBackup="false" android:fullBackupContent="@xml/backup_rules" android:dataExtractionRules="@xml/data_extraction_rules" android:usesCleartextTraffic="false" android:supportsRtl="true">
         <meta-data android:name="com.google.android.geo.API_KEY" android:value="${MAPS_API_KEY}" />
         <activity android:name=".MapActivity" android:exported="false" />
         <activity android:name=".MainActivity" android:exported="true">

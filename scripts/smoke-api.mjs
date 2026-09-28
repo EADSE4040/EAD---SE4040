@@ -1,0 +1,65 @@
+import fs from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import crypto from 'node:crypto';
+
+// Local integration workflow only: creates clearly labelled synthetic demonstration records.
+const base = process.env.API_URL || 'http://localhost:5080/api';
+const credentials = JSON.parse(await fs.readFile(new URL('../.tools/dev-credentials.json', import.meta.url), 'utf8'));
+let checks = 0;
+async function call(path, method = 'GET', body, token, expected = 200) {
+  const response = await fetch(base + path, { method,
+    headers: { ...(body ? { 'Content-Type': 'application/json' } : {}), ...(token ? { Authorization: 'Bearer ' + token } : {}) },
+    ...(body ? { body: JSON.stringify(body) } : {}) });
+  const value = await response.json().catch(() => null);
+  assert.equal(response.status, expected, `${method} ${path}: ${value?.title || response.status}`);
+  checks++;
+  return value;
+}
+await call('/health');
+await call('/users', 'GET', undefined, undefined, 401);
+const admin = await call('/auth/login', 'POST', { email: credentials.Email, password: credentials.Password });
+const suffix = crypto.randomBytes(4).toString('hex');
+const password = crypto.randomBytes(18).toString('base64');
+const operatorEmail = `operator-${suffix}@example.test`;
+await call('/users/staff', 'POST', { name: 'Demo Grid Operator', email: operatorEmail, password, role: 'GridOperator' }, admin.token);
+const operator = await call('/auth/login', 'POST', { email: operatorEmail, password });
+await call('/users/staff', 'POST', { name: 'Unauthorized', email: `bad-${suffix}@example.test`, password, role: 'Backoffice' }, operator.token, 403);
+const nic = '999' + String(Date.now()).slice(-9);
+const prosumerEmail = `prosumer-${suffix}@example.test`;
+await call('/auth/register', 'POST', { nic, name: 'Demo Solar Prosumer', email: prosumerEmail, password, phone: '0000000000', address: 'Synthetic demonstration address' });
+await call('/auth/login', 'POST', { email: prosumerEmail, password }, undefined, 403);
+await call(`/users/${nic}/activate`, 'POST', undefined, operator.token, 403);
+await call(`/users/${nic}/activate`, 'POST', undefined, admin.token);
+const prosumer = await call('/auth/login', 'POST', { email: prosumerEmail, password });
+const nodeBody = { name: 'Colombo Solar Hub (demo)', address: 'Colombo demonstration grid', latitude: 6.9271, longitude: 79.8612, capacityKw: 120, batterySlots: 6, schedule: 'Daily 06:00–22:00' };
+await call('/stations', 'POST', nodeBody, prosumer.token, 403);
+const node = await call('/stations', 'POST', nodeBody, admin.token);
+const nearby = await call('/stations?latitude=6.9271&longitude=79.8612&radiusKm=1', 'GET', undefined, prosumer.token);
+assert.ok(nearby.some(item => item.id === node.id)); checks++;
+const distant = await call('/stations?latitude=0&longitude=0&radiusKm=1', 'GET', undefined, prosumer.token);
+assert.ok(distant.every(item => item.id !== node.id)); checks++;
+await call('/stations', 'POST', { ...nodeBody, latitude: 100 }, admin.token, 400);
+const start = new Date(Date.now() + 24 * 3600000), end = new Date(start.getTime() + 3600000);
+const slot = await call(`/stations/${node.id}/slots`, 'POST', { start: start.toISOString(), end: end.toISOString(), capacityKwh: 60, maxBookings: 6 }, operator.token);
+await call('/reservations?from=&to=&page=1&pageSize=15', 'GET', undefined, admin.token);
+let booking = await call('/reservations', 'POST', { slotId: slot.id, energyKwh: 12, direction: 'DropOff' }, prosumer.token);
+await call(`/stations/${node.id}/deactivate`, 'POST', undefined, admin.token, 409);
+await call(`/reservations/${booking.id}/approve`, 'POST', undefined, prosumer.token, 403);
+await call(`/reservations/${booking.id}/approve`, 'POST', undefined, operator.token);
+const qr = await call(`/reservations/${booking.id}/qr`, 'GET', undefined, prosumer.token);
+await call('/reservations/verify', 'POST', { qrCode: qr.qrCode }, operator.token);
+await call('/reservations/verify', 'POST', { qrCode: qr.qrCode.slice(0, -1) + (qr.qrCode.endsWith('0') ? '1' : '0') }, operator.token, 400);
+booking = await call(`/reservations/${booking.id}`, 'PUT', { slotId: slot.id, energyKwh: 15, direction: 'Charging' }, prosumer.token);
+assert.equal(booking.status, 'Pending'); checks++;
+await call('/reservations/verify', 'POST', { qrCode: qr.qrCode }, operator.token, 409);
+await call(`/reservations/${booking.id}/approve`, 'POST', undefined, admin.token);
+await call('/reservations', 'POST', { slotId: slot.id, energyKwh: 8, direction: 'DropOff' }, prosumer.token);
+const dashboard = await call('/reservations/dashboard', 'GET', undefined, prosumer.token);
+assert.ok(dashboard.pending >= 1 && dashboard.approvedFuture >= 1); checks++;
+await call('/auth/me', 'PUT', { name: 'Demo Solar Prosumer', phone: '0000000000', address: 'Updated synthetic demonstration address' }, prosumer.token);
+await call('/auth/me/deactivate', 'POST', undefined, prosumer.token, 204);
+await call('/auth/me', 'GET', undefined, prosumer.token, 401);
+await call(`/users/${nic}/activate`, 'POST', undefined, admin.token);
+await fs.writeFile(new URL('../.tools/demo-account.json', import.meta.url), JSON.stringify({ email: prosumerEmail, password, nic }, null, 2));
+console.log(`PASS: ${checks} live HTTP assertions, including role restrictions, activation, booking workflow, QR tampering and revoked sessions.`);
+console.log('Synthetic demo account credentials saved privately in .tools/demo-account.json.');

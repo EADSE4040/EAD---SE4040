@@ -82,8 +82,9 @@ public sealed class StationsController(GridService service) : ApiController
 {
     // Serve persisted station coordinates and specifications to every authenticated role.
     [HttpGet]
-    public Task<List<Station>> List(bool includeInactive, CancellationToken ct) =>
-        service.Stations(includeInactive && Role != Roles.Prosumer, ct);
+    public Task<List<Station>> List(bool includeInactive, CancellationToken ct, double? latitude = null,
+        double? longitude = null, double radiusKm = 25) =>
+        service.Stations(includeInactive && Role != Roles.Prosumer, ct, latitude, longitude, radiusKm);
 
     // Restrict new node registration to system administrators.
     [HttpPost, Authorize(Roles = Roles.Backoffice)]

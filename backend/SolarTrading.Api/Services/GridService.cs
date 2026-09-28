@@ -11,16 +11,42 @@ namespace SolarTrading.Api.Services;
 public sealed class GridService(MongoStore db, TimeProvider clock)
 {
     // List actual persisted stations for both dashboards and map clients.
-    public Task<List<Station>> Stations(bool includeInactive, CancellationToken ct) =>
-        db.Stations.Find(x => includeInactive || x.Active).SortBy(x => x.Name).Limit(500).ToListAsync(ct);
+    public async Task<List<Station>> Stations(bool includeInactive, CancellationToken ct,
+        double? latitude = null, double? longitude = null, double radiusKm = 25)
+    {
+        var nodes = await db.Stations.Find(x => includeInactive || x.Active).SortBy(x => x.Name).Limit(500).ToListAsync(ct);
+        if (!latitude.HasValue && !longitude.HasValue) return nodes;
+        if (!latitude.HasValue || !longitude.HasValue || !double.IsFinite(latitude.Value) ||
+            !double.IsFinite(longitude.Value) || Math.Abs(latitude.Value) > 90 || Math.Abs(longitude.Value) > 180 ||
+            !double.IsFinite(radiusKm) || radiusKm <= 0 || radiusKm > 500)
+            throw new DomainException(400, "Provide valid latitude, longitude and a radius between zero and 500 km.");
+        return nodes.Select(node => new { Node = node, Distance = DistanceKm(latitude.Value, longitude.Value, node.Latitude, node.Longitude) })
+            .Where(item => item.Distance <= radiusKm).OrderBy(item => item.Distance).Select(item => item.Node).ToList();
+    }
+
+    // Calculate great-circle distance centrally so both clients use the same nearby-node criteria.
+    private static double DistanceKm(double lat1, double lon1, double lat2, double lon2)
+    {
+        const double radians = Math.PI / 180;
+        var a = Math.Pow(Math.Sin((lat2 - lat1) * radians / 2), 2) + Math.Cos(lat1 * radians)
+            * Math.Cos(lat2 * radians) * Math.Pow(Math.Sin((lon2 - lon1) * radians / 2), 2);
+        return 6371 * 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(Math.Max(0, 1 - a)));
+    }
 
     // Create a node with validated GPS, electrical and storage specifications.
     public async Task<Station> Create(StationRequest input, CancellationToken ct)
     {
         Validate(input);
-        var station = new Station { Name = input.Name.Trim(), Address = input.Address.Trim(),
-            Latitude = input.Latitude, Longitude = input.Longitude, CapacityKw = input.CapacityKw,
-            BatterySlots = input.BatterySlots, Schedule = input.Schedule.Trim() };
+        var station = new Station
+        {
+            Name = input.Name.Trim(),
+            Address = input.Address.Trim(),
+            Latitude = input.Latitude,
+            Longitude = input.Longitude,
+            CapacityKw = input.CapacityKw,
+            BatterySlots = input.BatterySlots,
+            Schedule = input.Schedule.Trim()
+        };
         await db.Stations.InsertOneAsync(station, cancellationToken: ct);
         return station;
     }
@@ -79,8 +105,14 @@ public sealed class GridService(MongoStore db, TimeProvider clock)
             BusinessRules.Slot(input.Start.UtcDateTime, input.End.UtcDateTime, input.CapacityKwh,
                 input.MaxBookings, node.BatterySlots, clock.GetUtcNow().UtcDateTime);
             await NoOverlap(session, stationId, "", input, token);
-            var slot = new EnergySlot { StationId = stationId, Start = input.Start.UtcDateTime,
-                End = input.End.UtcDateTime, CapacityKwh = input.CapacityKwh, MaxBookings = input.MaxBookings };
+            var slot = new EnergySlot
+            {
+                StationId = stationId,
+                Start = input.Start.UtcDateTime,
+                End = input.End.UtcDateTime,
+                CapacityKwh = input.CapacityKwh,
+                MaxBookings = input.MaxBookings
+            };
             await db.Slots.InsertOneAsync(session, slot, cancellationToken: token);
             await db.Log(session, actor, "Slot:Create", slot.Id, token);
             return slot;

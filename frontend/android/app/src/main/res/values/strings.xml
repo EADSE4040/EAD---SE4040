@@ -1,0 +1,9 @@
+<resources>
+    <string name="map_back">Back to Solara</string>
+    <string name="map_loading">Loading nearby grid nodes…</string>
+    <string name="map_key_missing">Google Maps is not configured. Contact the administrator to enable maps.</string>
+    <string name="map_ready">Nearby microgrid nodes · tap a marker for details</string>
+    <string name="map_cached">Offline: displaying cached stations. Availability may have changed.</string>
+    <string name="map_location_unavailable">Location permission unavailable; all active grid nodes remain visible.</string>
+    <string name="map_no_nodes">No active grid nodes were found in this area.</string>
+</resources>

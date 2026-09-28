@@ -18,6 +18,24 @@ Alternatively, the C# test runner's `--init` command performs exactly this local
 
 ## Windows IIS prerequisites
 
+### Prepared setup for this PC
+
+The user selected this Windows 11 Home PC. The current process has no administrator privileges, so IIS installation cannot run in this session. Use Windows PowerShell as Administrator for the installation step below.
+
+1. In the repository, run `powershell -ExecutionPolicy Bypass -File scripts/prepare-iis.ps1`. This publishes into `artifacts/iis-local` and downloads the .NET 10.0.12 Hosting Bundle from Microsoft's release metadata, checking its SHA512 hash and Microsoft Authenticode signature.
+2. Keep the local MongoDB replica set running using `scripts/start-local.ps1`.
+3. In **administrator Windows PowerShell**, run:
+
+```powershell
+& 'C:\Users\Koji\Desktop\EAD - SE4040\scripts\setup-iis.ps1'
+```
+
+The script enables IIS through DISM, installs the Hosting Bundle after IIS, creates separate No Managed Code application pools, stores secrets in administrator-managed IIS pool configuration, grants read/execute permissions to the published files, and checks both sites. It stops on existing site/pool names or occupied ports. If Windows requests a reboot, restart and rerun the setup script. This script has been syntax-checked; its administrator-only actions are still unexecuted.
+
+The portal is `http://127.0.0.1:8081` and health is `http://127.0.0.1:8080/api/health`. An emulator debug build uses `http://10.0.2.2:8080/api`. These loopback HTTP bindings support local assessment testing; use trusted HTTPS and network-reachable bindings for release/physical-device deployment. MongoDB is a locally running development process and must be restarted after a reboot. The setup does not install a persistent MongoDB Windows service.
+
+### HTTPS deployment
+
 1. Enable IIS with management tools and static content support.
 2. Install the .NET 10 Hosting Bundle. If IIS was enabled after installing the bundle, repair/reinstall the bundle so the ASP.NET Core module is registered.
 3. Publish with `scripts/publish.ps1 -ApiUrl https://YOUR_API_HOST/api`.
