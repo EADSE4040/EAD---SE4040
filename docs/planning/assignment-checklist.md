@@ -1,6 +1,6 @@
 # SE4040 assignment planning checklist
 
-This is an AI-assisted planning starting point. The team must critically evaluate and refine it, implement the assessed system independently, and disclose planning assistance in its own report. This checklist is not evidence of implementation or a guarantee of marks.
+This is an AI-assisted planning starting point. At the user's subsequent request, implementation assistance was also used. The assignment limits AI to planning; the team must disclose actual assistance accurately and resolve assessment compliance with the lecturer. This checklist is not evidence of implementation or a guarantee of marks.
 
 ## Repository layout
 
@@ -69,4 +69,3 @@ The local parent directory is the Git repository root. Its name is not included 
 - [ ] Single ZIP contains all required project files and report; ZIP filename includes the required IT number.
 - [ ] Submission completed by 30 September 2026, 11:59 PM.
 - [ ] Every member attends the compulsory viva and can explain their own implementation.
-

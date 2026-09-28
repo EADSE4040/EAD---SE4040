@@ -18,5 +18,8 @@ build/
 
 # Temporary files
 tmp/
+.tools/
+artifacts/
+appsettings.Local.json
+maps.properties
 *.log
-
