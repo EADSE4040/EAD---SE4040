@@ -1,0 +1,22 @@
+# Local credentials and configuration
+.env
+.env.*
+!.env.example
+*.user
+*.suo
+local.properties
+
+# Dependencies and generated output
+node_modules/
+bin/
+obj/
+dist/
+build/
+.gradle/
+.vs/
+.idea/
+
+# Temporary files
+tmp/
+*.log
+
