@@ -24,6 +24,13 @@ if ($LASTEXITCODE -ne 0) { throw 'Windows could not enable IIS. Review the DISM 
 $process=Start-Process -FilePath $installer -ArgumentList '/install','/quiet','/norestart' -WindowStyle Hidden -Wait -PassThru
 if ($process.ExitCode -eq 3010) { throw 'The Hosting Bundle requires a restart. Restart this PC, then rerun setup-iis.ps1.' }
 if ($process.ExitCode -ne 0) { throw "Hosting Bundle installer failed: $($process.ExitCode)." }
+# Use the installed runtime explicitly so a pre-existing service's PATH is irrelevant.
+$globalDotnet=Join-Path $env:ProgramFiles 'dotnet/dotnet.exe'
+if (!(Test-Path -LiteralPath $globalDotnet)) { throw 'The Hosting Bundle did not install the expected 64-bit runtime.' }
+$apiWebConfig=Join-Path $root 'api/web.config'
+[xml]$publishedConfig=Get-Content -LiteralPath $apiWebConfig -Raw
+$publishedConfig.configuration.location.'system.webServer'.aspNetCore.processPath=$globalDotnet
+$publishedConfig.Save($apiWebConfig)
 Add-Type -Path (Join-Path $env:windir 'System32/inetsrv/Microsoft.Web.Administration.dll')
 $manager=New-Object Microsoft.Web.Administration.ServerManager
 try {

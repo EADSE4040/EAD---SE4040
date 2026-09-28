@@ -7,7 +7,7 @@ $staging=Join-Path $artifactDir ('submission-'+[Guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $staging | Out-Null
 Push-Location $repo
 try {
-    $files=@(& git ls-files)
+    $files=@(& git -c "safe.directory=$($repo.Replace('\','/'))" ls-files)
     if ($LASTEXITCODE -ne 0) { throw 'Unable to enumerate tracked submission files.' }
     foreach($relative in $files) {
         if($relative -match '(^|/)(\.tools|node_modules|bin|obj|build|dist|\.git)(/|$)' -or $relative -match 'appsettings\.Local\.json$|maps\.properties$|local\.properties$|\.env$') { continue }

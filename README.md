@@ -74,6 +74,8 @@ For this Windows PC, run `scripts/prepare-iis.ps1` to build the loopback deploym
 
 Read [assignment checklist](docs/planning/assignment-checklist.md), [system design](docs/design.md), and [submission checklist](docs/submission.md). A passing build is not proof of IIS hosting, device features, or viva readiness.
 
+Use the [five-minute demonstration guide](docs/demo-guide.md) after deployment and device verification. The generated `artifacts/report-with-source.md` is a draft with screenshots and a complete source-text appendix; complete the actual contribution and device/deployment evidence before submission.
+
 Confirmed three-member group: Kojithan P.Y (IT22264220), Baskaran V (IT22172600), Nishara T (IT22223876). Actual contributions remain outstanding. See [contribution record](docs/contributions.md).
 
 Demo video (maximum five minutes): **awaiting recording and upload by the team**.

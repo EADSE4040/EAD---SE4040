@@ -30,20 +30,20 @@ The local parent directory is the Git repository root. Its name is not included 
 
 ## API business-rule verification plan
 
-- [ ] Create reservations only within the seven-day window; agree exact boundary semantics.
-- [ ] Updates and cancellations require at least twelve hours' notice; test before, at, and after the boundary.
-- [ ] Reject node deactivation when active reservations exist.
-- [ ] Only Backoffice can reactivate deactivated prosumers.
-- [ ] Enforce role permissions and reservation ownership on the server.
-- [ ] Prevent overbooking, including simultaneous requests for the final available slot.
-- [ ] Only approved valid reservations receive usable transaction QR codes.
-- [ ] Verify QR data against server records and prevent repeated completion.
-- [ ] Verify inactive-account restrictions and accurate dashboard counts.
+- [x] Create reservations only within the seven-day window; exactly seven days is accepted.
+- [x] Updates and cancellations require at least twelve hours' notice; exactly twelve hours is accepted.
+- [x] Reject node deactivation when active reservations exist.
+- [x] Only Backoffice can reactivate deactivated prosumers.
+- [x] Enforce role permissions and reservation ownership on the server.
+- [x] Prevent overbooking, including simultaneous requests for the final available slot.
+- [x] Only approved valid reservations receive usable transaction QR codes.
+- [x] Verify QR data against server records and prevent repeated completion.
+- [x] Verify inactive-account restrictions and accurate dashboard counts.
 - [ ] Verify API failures, expired authentication, connectivity loss, and SQLite persistence after app restart.
 
 ## Decisions requiring clarification
 
-- Confirm who activates new accounts and approves bookings.
+- Backoffice activates accounts. The user confirmed that Grid Operators and Backoffice approve bookings.
 - Reconcile station/slot deletion in the rubric with node deactivation constraints in the specification.
 - Confirm the intended energy/capacity units; the brief uses `kW/h`.
 - Agree reservation status transitions, timezone, and exact seven-day booking boundary.

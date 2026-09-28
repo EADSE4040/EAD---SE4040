@@ -10,6 +10,7 @@
 - Android debug APK build and lint passed; zero lint errors, with three advisory dependency-update warnings.
 - Browser verified staff login, live dashboard counts, navigation to each staff page, and an actual reservation form submission returning a summary.
 - Unique web screenshots are saved under `docs/screenshots/`. Records shown are synthetic demonstration data, not real energy transactions.
+- Local IIS API/web artifacts were published successfully; the official .NET 10.0.12 Hosting Bundle passed SHA512 and Microsoft Authenticode signature verification. Setup scripts passed PowerShell syntax checks.
 
 ## Remaining external verification
 
