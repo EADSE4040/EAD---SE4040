@@ -1,0 +1,24 @@
+{
+    "capturedUtc":  "2026-09-28T18:54:36.2976842Z",
+    "mongoService":  "Running",
+    "sites":  [
+                  {
+                      "pool":  "SolaraApi",
+                      "name":  "SolaraApi",
+                      "bindings":  [
+                                       "http 127.0.0.1:8080:"
+                                   ],
+                      "physicalPath":  "C:\\Users\\Koji\\Desktop\\EAD - SE4040\\artifacts\\iis-local\\api",
+                      "state":  "Started"
+                  },
+                  {
+                      "pool":  "SolaraWeb",
+                      "name":  "SolaraWeb",
+                      "bindings":  [
+                                       "http 127.0.0.1:8081:"
+                                   ],
+                      "physicalPath":  "C:\\Users\\Koji\\Desktop\\EAD - SE4040\\artifacts\\iis-local\\web",
+                      "state":  "Started"
+                  }
+              ]
+}

@@ -1,0 +1,12 @@
+{
+  "sessionRestoredAfterProcessRestart": true,
+  "sqliteFile": "solara.db",
+  "sessionStoredAsEncryptedText": true,
+  "cacheRows": [
+    {
+      "name": "session",
+      "bytes": 929,
+      "updatedAt": 1790622291204
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="600" height="360" preserveAspectRatio="xMinYMin meet" viewBox="0 0 600 360" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="600" height="360"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-360)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="10" y="240" width="170" height="85" rx="7" ry="7" style="stroke: rgb(12%,36%,27%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,92%); fill-rule: evenodd;"/>
+			<text x="53.744499999999995" y="305" style="font-family: Helvetica-Bold; font-size: 11px;fill: rgb(12%,36%,27%); stroke:none;" transform="translate(0,610) scale(1,-1)">Staff web portal</text>
+			<text x="58.856" y="287" style="font-family: Helvetica; font-size: 9px;fill: rgb(14%,21%,18%); stroke:none;" transform="translate(0,574) scale(1,-1)">React + Bootstrap</text>
+			<text x="42.98" y="273" style="font-family: Helvetica; font-size: 9px;fill: rgb(14%,21%,18%); stroke:none;" transform="translate(0,546) scale(1,-1)">Backoffice / Grid Operator</text>
+			<rect x="10" y="90" width="170" height="95" rx="7" ry="7" style="stroke: rgb(12%,36%,27%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,92%); fill-rule: evenodd;"/>
+			<text x="55.884" y="165" style="font-family: Helvetica-Bold; font-size: 11px;fill: rgb(12%,36%,27%); stroke:none;" transform="translate(0,330) scale(1,-1)">Native Android</text>
+			<text x="48.105500000000006" y="147" style="font-family: Helvetica; font-size: 9px;fill: rgb(14%,21%,18%); stroke:none;" transform="translate(0,294) scale(1,-1)">Java activities + SQLite</text>
+			<text x="44.235499999999995" y="133" style="font-family: Helvetica; font-size: 9px;fill: rgb(14%,21%,18%); stroke:none;" transform="translate(0,266) scale(1,-1)">Prosumer / Grid Operator</text>
+			<text x="44.357" y="119" style="font-family: Helvetica; font-size: 9px;fill: rgb(14%,21%,18%); stroke:none;" transform="translate(0,238) scale(1,-1)">Maps SDK + QR scanner</text>
+			<rect x="225" y="165" width="165" height="110" rx="7" ry="7" style="stroke: rgb(12%,36%,27%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,92%); fill-rule: evenodd;"/>
+			<text x="273.26800000000003" y="255" style="font-family: Helvetica-Bold; font-size: 11px;fill: rgb(12%,36%,27%); stroke:none;" transform="translate(0,510) scale(1,-1)">C# API on IIS</text>
+			<text x="258.6075" y="237" style="font-family: Helvetica; font-size: 9px;fill: rgb(14%,21%,18%); stroke:none;" transform="translate(0,474) scale(1,-1)">JWT + role authorization</text>
+			<text x="258.9765" y="223" style="font-family: Helvetica; font-size: 9px;fill: rgb(14%,21%,18%); stroke:none;" transform="translate(0,446) scale(1,-1)">Account / Grid / Booking</text>
+			<text x="252.4785" y="209" style="font-family: Helvetica; font-size: 9px;fill: rgb(14%,21%,18%); stroke:none;" transform="translate(0,418) scale(1,-1)">Authoritative business rules</text>
+			<rect x="435" y="165" width="155" height="110" rx="7" ry="7" style="stroke: rgb(12%,36%,27%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,92%); fill-rule: evenodd;"/>
+			<text x="457.797" y="255" style="font-family: Helvetica-Bold; font-size: 11px;fill: rgb(12%,36%,27%); stroke:none;" transform="translate(0,510) scale(1,-1)">MongoDB replica set</text>
+			<text x="471.7345" y="237" style="font-family: Helvetica; font-size: 9px;fill: rgb(14%,21%,18%); stroke:none;" transform="translate(0,474) scale(1,-1)">Users / nodes / slots</text>
+			<text x="472.7335" y="223" style="font-family: Helvetica; font-size: 9px;fill: rgb(14%,21%,18%); stroke:none;" transform="translate(0,446) scale(1,-1)">Reservations / audit</text>
+			<text x="473.2375" y="209" style="font-family: Helvetica; font-size: 9px;fill: rgb(14%,21%,18%); stroke:none;" transform="translate(0,418) scale(1,-1)">Atomic transactions</text>
+			<path d="M 180,270 L 225,240 Z" style="stroke: rgb(12%,36%,27%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="225 240, 221.8974 246.2749, 218.0145 240.4505" style="stroke: rgb(12%,36%,27%); stroke-linecap: butt; stroke-width: 1; fill: rgb(12%,36%,27%); fill-rule: evenodd;"/>
+			<path d="M 180,135 L 225,195 Z" style="stroke: rgb(12%,36%,27%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="225 195, 218.5627 192.2503, 224.1627 188.0503" style="stroke: rgb(12%,36%,27%); stroke-linecap: butt; stroke-width: 1; fill: rgb(12%,36%,27%); fill-rule: evenodd;"/>
+			<path d="M 390,220 L 435,220 Z" style="stroke: rgb(12%,36%,27%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="435 220, 428.9378 223.5, 428.9378 216.5" style="stroke: rgb(12%,36%,27%); stroke-linecap: butt; stroke-width: 1; fill: rgb(12%,36%,27%); fill-rule: evenodd;"/>
+			<text x="190" y="294" style="font-family: Times-Roman; font-size: 9px;fill: rgb(12%,36%,27%); stroke:none;" transform="translate(0,588) scale(1,-1)">REST / JWT</text>
+			<text x="88.5085" y="38" style="font-family: Times-Roman; font-size: 9px;fill: rgb(14%,21%,18%); stroke:none;" transform="translate(0,76) scale(1,-1)">Both clients use the API; neither connects directly to MongoDB.</text>
+		</g>
+	</g>
+</svg>

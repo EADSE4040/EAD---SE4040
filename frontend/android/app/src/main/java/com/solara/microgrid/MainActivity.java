@@ -47,6 +47,8 @@ public final class MainActivity extends Activity {
   @Override
   public void onCreate(Bundle state) {
     super.onCreate(state);
+    getWindow().getDecorView().setSystemUiVisibility(
+        View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
     store = new LocalStore(this);
     String url = getPreferences(MODE_PRIVATE).getString("api", "http://10.0.2.2:5080/api");
     api = new ApiClient(this, url);
@@ -261,6 +263,8 @@ public final class MainActivity extends Activity {
   private void showError(String error) {
     message.setText(error);
     message.setVisibility(View.VISIBLE);
+    message.post(() -> message.requestRectangleOnScreen(
+        new android.graphics.Rect(0, 0, message.getWidth(), message.getHeight()), true));
   }
 
   private void call(String method, String path, JSONObject body, ApiClient.Callback callback) {

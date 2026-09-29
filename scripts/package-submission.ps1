@@ -19,6 +19,8 @@ try {
     & node (Join-Path $repo 'scripts/generate-report.mjs')
     if ($LASTEXITCODE -ne 0) { throw 'Report generation failed.' }
     Copy-Item -LiteralPath (Join-Path $artifactDir 'report-with-source.md') -Destination (Join-Path $staging 'report-with-source.md')
+    $pdf=Join-Path $artifactDir 'Solara-SE4040-Report.pdf'
+    if(Test-Path -LiteralPath $pdf) { Copy-Item -LiteralPath $pdf -Destination (Join-Path $staging 'Solara-SE4040-Report.pdf') }
     $zip=Join-Path $artifactDir ($ITNumber+'.zip')
     if(Test-Path -LiteralPath $zip){throw 'A submission ZIP already exists; choose explicitly whether to replace it.'}
     Compress-Archive -Path (Join-Path $staging '*') -DestinationPath $zip

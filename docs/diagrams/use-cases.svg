@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="600" height="360" preserveAspectRatio="xMinYMin meet" viewBox="0 0 600 360" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="600" height="360"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-360)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="15" y="265" width="155" height="70" rx="7" ry="7" style="stroke: rgb(12%,36%,27%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,92%); fill-rule: evenodd;"/>
+			<text x="64.6865" y="315" style="font-family: Helvetica-Bold; font-size: 11px;fill: rgb(12%,36%,27%); stroke:none;" transform="translate(0,630) scale(1,-1)">Backoffice</text>
+			<rect x="225" y="255" width="355" height="95" rx="7" ry="7" style="stroke: rgb(12%,36%,27%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,92%); fill-rule: evenodd;"/>
+			<text x="355.112" y="330" style="font-family: Helvetica-Bold; font-size: 11px;fill: rgb(12%,36%,27%); stroke:none;" transform="translate(0,660) scale(1,-1)">System use cases</text>
+			<text x="335.46799999999996" y="312" style="font-family: Helvetica; font-size: 9px;fill: rgb(14%,21%,18%); stroke:none;" transform="translate(0,624) scale(1,-1)">Manage users / activate accounts</text>
+			<text x="353.4725" y="298" style="font-family: Helvetica; font-size: 9px;fill: rgb(14%,21%,18%); stroke:none;" transform="translate(0,596) scale(1,-1)">Manage nodes and slots</text>
+			<text x="334.7255" y="284" style="font-family: Helvetica; font-size: 9px;fill: rgb(14%,21%,18%); stroke:none;" transform="translate(0,568) scale(1,-1)">Review reservations / dashboards</text>
+			<path d="M 170,300 L 225,300 Z" style="stroke: rgb(12%,36%,27%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="225 300, 218.9378 303.5, 218.9378 296.5" style="stroke: rgb(12%,36%,27%); stroke-linecap: butt; stroke-width: 1; fill: rgb(12%,36%,27%); fill-rule: evenodd;"/>
+			<rect x="15" y="150" width="155" height="70" rx="7" ry="7" style="stroke: rgb(12%,36%,27%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,92%); fill-rule: evenodd;"/>
+			<text x="56.436499999999995" y="200" style="font-family: Helvetica-Bold; font-size: 11px;fill: rgb(12%,36%,27%); stroke:none;" transform="translate(0,400) scale(1,-1)">Grid Operator</text>
+			<rect x="225" y="140" width="355" height="95" rx="7" ry="7" style="stroke: rgb(12%,36%,27%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,92%); fill-rule: evenodd;"/>
+			<text x="355.112" y="215" style="font-family: Helvetica-Bold; font-size: 11px;fill: rgb(12%,36%,27%); stroke:none;" transform="translate(0,430) scale(1,-1)">System use cases</text>
+			<text x="333.227" y="197" style="font-family: Helvetica; font-size: 9px;fill: rgb(14%,21%,18%); stroke:none;" transform="translate(0,394) scale(1,-1)">Manage slots / review reservations</text>
+			<text x="363.485" y="183" style="font-family: Helvetica; font-size: 9px;fill: rgb(14%,21%,18%); stroke:none;" transform="translate(0,366) scale(1,-1)">Scan and verify QR</text>
+			<text x="342.7265" y="169" style="font-family: Helvetica; font-size: 9px;fill: rgb(14%,21%,18%); stroke:none;" transform="translate(0,338) scale(1,-1)">Complete scheduled transfers</text>
+			<path d="M 170,185 L 225,185 Z" style="stroke: rgb(12%,36%,27%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="225 185, 218.9378 188.5, 218.9378 181.5" style="stroke: rgb(12%,36%,27%); stroke-linecap: butt; stroke-width: 1; fill: rgb(12%,36%,27%); fill-rule: evenodd;"/>
+			<rect x="15" y="35" width="155" height="70" rx="7" ry="7" style="stroke: rgb(12%,36%,27%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,92%); fill-rule: evenodd;"/>
+			<text x="66.826" y="85" style="font-family: Helvetica-Bold; font-size: 11px;fill: rgb(12%,36%,27%); stroke:none;" transform="translate(0,170) scale(1,-1)">Prosumer</text>
+			<rect x="225" y="25" width="355" height="95" rx="7" ry="7" style="stroke: rgb(12%,36%,27%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,92%); fill-rule: evenodd;"/>
+			<text x="355.112" y="100" style="font-family: Helvetica-Bold; font-size: 11px;fill: rgb(12%,36%,27%); stroke:none;" transform="translate(0,200) scale(1,-1)">System use cases</text>
+			<text x="345.476" y="82" style="font-family: Helvetica; font-size: 9px;fill: rgb(14%,21%,18%); stroke:none;" transform="translate(0,164) scale(1,-1)">Register / profile / deactivate</text>
+			<text x="334.97749999999996" y="68" style="font-family: Helvetica; font-size: 9px;fill: rgb(14%,21%,18%); stroke:none;" transform="translate(0,136) scale(1,-1)">Reserve / modify / cancel / history</text>
+			<text x="333.21799999999996" y="54" style="font-family: Helvetica; font-size: 9px;fill: rgb(14%,21%,18%); stroke:none;" transform="translate(0,108) scale(1,-1)">Approved QR / nearby station map</text>
+			<path d="M 170,70 L 225,70 Z" style="stroke: rgb(12%,36%,27%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="225 70, 218.9378 73.5, 218.9378 66.5" style="stroke: rgb(12%,36%,27%); stroke-linecap: butt; stroke-width: 1; fill: rgb(12%,36%,27%); fill-rule: evenodd;"/>
+		</g>
+	</g>
+</svg>

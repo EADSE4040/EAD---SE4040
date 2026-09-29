@@ -20,7 +20,7 @@ Alternatively, the C# test runner's `--init` command performs exactly this local
 
 ### Prepared setup for this PC
 
-The user selected this Windows 11 Home PC. The current process has no administrator privileges, so IIS installation cannot run in this session. Use Windows PowerShell as Administrator for the installation step below.
+IIS and the .NET 10 Hosting Bundle are installed on this Windows 11 Home PC. Both dedicated sites return HTTP 200 and the API reports its MongoDB connection as healthy. Installation used an administrator PowerShell process through Windows UAC. The steps below reproduce the initial installation.
 
 1. In the repository, run `powershell -ExecutionPolicy Bypass -File scripts/prepare-iis.ps1`. This publishes into `artifacts/iis-local` and downloads the .NET 10.0.12 Hosting Bundle from Microsoft's release metadata, checking its SHA512 hash and Microsoft Authenticode signature.
 2. Keep the local MongoDB replica set running using `scripts/start-local.ps1`.
@@ -30,9 +30,11 @@ The user selected this Windows 11 Home PC. The current process has no administra
 & 'C:\Users\Koji\Desktop\EAD - SE4040\scripts\setup-iis.ps1'
 ```
 
-The script enables IIS through DISM, installs the Hosting Bundle after IIS, creates separate No Managed Code application pools, stores secrets in administrator-managed IIS pool configuration, grants read/execute permissions to the published files, and checks both sites. It stops on existing site/pool names or occupied ports. If Windows requests a reboot, restart and rerun the setup script. This script has been syntax-checked; its administrator-only actions are still unexecuted.
+The script enables IIS through DISM, installs the Hosting Bundle after IIS, creates separate No Managed Code application pools, stores secrets in administrator-managed IIS pool configuration, grants read/execute permissions to the published files, and checks both sites. Anonymous IIS file access uses the application pool identity. It stops on existing site/pool names or occupied ports. If Windows requests a reboot, restart and rerun the setup script. IIS settings captured from the running server are in `docs/evidence/iis-configuration.json`.
 
-The portal is `http://127.0.0.1:8081` and health is `http://127.0.0.1:8080/api/health`. An emulator debug build uses `http://10.0.2.2:8080/api`. These loopback HTTP bindings support local assessment testing; use trusted HTTPS and network-reachable bindings for release/physical-device deployment. MongoDB is a locally running development process and must be restarted after a reboot. The setup does not install a persistent MongoDB Windows service.
+The portal is `http://127.0.0.1:8081` and health is `http://127.0.0.1:8080/api/health`. An emulator debug build uses `http://10.0.2.2:8080/api`. These loopback HTTP bindings support local assessment testing; use trusted HTTPS and network-reachable bindings for release/physical-device deployment.
+
+MongoDB is now installed as the automatic-start `SolaraMongo` Windows service under LocalService, using the existing replica-set data and binding only to `127.0.0.1:27018`. `scripts/install-mongodb-service.ps1` performs that administrator setup. Data and service logs have dedicated write permissions. Restarting the IIS API pool after database recovery resolves a previously failed application startup. Keep the workspace at its current path because the service and IIS sites reference it.
 
 ### HTTPS deployment
 

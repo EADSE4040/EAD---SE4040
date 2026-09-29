@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="600" height="360" preserveAspectRatio="xMinYMin meet" viewBox="0 0 600 360" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="600" height="360"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-360)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="10" y="240" width="170" height="85" rx="7" ry="7" style="stroke: rgb(12%,36%,27%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,92%); fill-rule: evenodd;"/>
+			<text x="79.7155" y="305" style="font-family: Helvetica-Bold; font-size: 11px;fill: rgb(12%,36%,27%); stroke:none;" transform="translate(0,610) scale(1,-1)">Users</text>
+			<text x="57.987500000000004" y="287" style="font-family: Helvetica; font-size: 9px;fill: rgb(14%,21%,18%); stroke:none;" transform="translate(0,574) scale(1,-1)">_id: NIC or staff ID</text>
+			<text x="42.476" y="273" style="font-family: Helvetica; font-size: 9px;fill: rgb(14%,21%,18%); stroke:none;" transform="translate(0,546) scale(1,-1)">unique email / role / status</text>
+			<rect x="420" y="240" width="170" height="85" rx="7" ry="7" style="stroke: rgb(12%,36%,27%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,92%); fill-rule: evenodd;"/>
+			<text x="462.5235" y="305" style="font-family: Helvetica-Bold; font-size: 11px;fill: rgb(12%,36%,27%); stroke:none;" transform="translate(0,610) scale(1,-1)">SolarStationInfo</text>
+			<text x="477.487" y="287" style="font-family: Helvetica; font-size: 9px;fill: rgb(14%,21%,18%); stroke:none;" transform="translate(0,574) scale(1,-1)">_id: station ID</text>
+			<text x="459.73" y="273" style="font-family: Helvetica; font-size: 9px;fill: rgb(14%,21%,18%); stroke:none;" transform="translate(0,546) scale(1,-1)">GPS / capacity / active</text>
+			<rect x="420" y="100" width="170" height="90" rx="7" ry="7" style="stroke: rgb(12%,36%,27%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,92%); fill-rule: evenodd;"/>
+			<text x="450.9075" y="170" style="font-family: Helvetica-Bold; font-size: 11px;fill: rgb(12%,36%,27%); stroke:none;" transform="translate(0,340) scale(1,-1)">EnergyBookingSlots</text>
+			<text x="471.3535" y="152" style="font-family: Helvetica; font-size: 9px;fill: rgb(14%,21%,18%); stroke:none;" transform="translate(0,304) scale(1,-1)">stationId -&gt; node</text>
+			<text x="456.733" y="138" style="font-family: Helvetica; font-size: 9px;fill: rgb(14%,21%,18%); stroke:none;" transform="translate(0,276) scale(1,-1)">UTC start/end / capacity</text>
+			<rect x="215" y="100" width="170" height="110" rx="7" ry="7" style="stroke: rgb(12%,36%,27%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,92%); fill-rule: evenodd;"/>
+			<text x="246.815" y="190" style="font-family: Helvetica-Bold; font-size: 11px;fill: rgb(12%,36%,27%); stroke:none;" transform="translate(0,380) scale(1,-1)">EnergyReservations</text>
+			<text x="261.8625" y="172" style="font-family: Helvetica; font-size: 9px;fill: rgb(14%,21%,18%); stroke:none;" transform="translate(0,344) scale(1,-1)">prosumerId -&gt; user</text>
+			<text x="268.48199999999997" y="158" style="font-family: Helvetica; font-size: 9px;fill: rgb(14%,21%,18%); stroke:none;" transform="translate(0,316) scale(1,-1)">stationId / slotId</text>
+			<text x="246.4725" y="144" style="font-family: Helvetica; font-size: 9px;fill: rgb(14%,21%,18%); stroke:none;" transform="translate(0,288) scale(1,-1)">status / nonce / completion</text>
+			<rect x="10" y="25" width="170" height="85" rx="7" ry="7" style="stroke: rgb(12%,36%,27%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,92%); fill-rule: evenodd;"/>
+			<text x="70.866" y="90" style="font-family: Helvetica-Bold; font-size: 11px;fill: rgb(12%,36%,27%); stroke:none;" transform="translate(0,180) scale(1,-1)">AuditLog</text>
+			<text x="50.9765" y="72" style="font-family: Helvetica; font-size: 9px;fill: rgb(14%,21%,18%); stroke:none;" transform="translate(0,144) scale(1,-1)">actor / action / entityId</text>
+			<text x="63.7475" y="58" style="font-family: Helvetica; font-size: 9px;fill: rgb(14%,21%,18%); stroke:none;" transform="translate(0,116) scale(1,-1)">UTC timestamp</text>
+			<path d="M 180,260 L 245,210 Z" style="stroke: rgb(12%,36%,27%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="245 210, 242.329 216.4704, 238.061 210.922" style="stroke: rgb(12%,36%,27%); stroke-linecap: butt; stroke-width: 1; fill: rgb(12%,36%,27%); fill-rule: evenodd;"/>
+			<path d="M 505,240 L 505,190 Z" style="stroke: rgb(12%,36%,27%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="505 190, 508.5 196.0622, 501.5 196.0622" style="stroke: rgb(12%,36%,27%); stroke-linecap: butt; stroke-width: 1; fill: rgb(12%,36%,27%); fill-rule: evenodd;"/>
+			<path d="M 420,145 L 385,145 Z" style="stroke: rgb(12%,36%,27%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="385 145, 391.0622 141.5, 391.0622 148.5" style="stroke: rgb(12%,36%,27%); stroke-linecap: butt; stroke-width: 1; fill: rgb(12%,36%,27%); fill-rule: evenodd;"/>
+			<path d="M 215,110 L 180,75 Z" style="stroke: rgb(12%,36%,27%); stroke-linecap: butt; stroke-width: 1.2;"/>
+			<polygon points="180 75, 186.7615 76.81173, 181.8117 81.76148" style="stroke: rgb(12%,36%,27%); stroke-linecap: butt; stroke-width: 1; fill: rgb(12%,36%,27%); fill-rule: evenodd;"/>
+		</g>
+	</g>
+</svg>

@@ -29,7 +29,7 @@ $globalDotnet=Join-Path $env:ProgramFiles 'dotnet/dotnet.exe'
 if (!(Test-Path -LiteralPath $globalDotnet)) { throw 'The Hosting Bundle did not install the expected 64-bit runtime.' }
 $apiWebConfig=Join-Path $root 'api/web.config'
 [xml]$publishedConfig=Get-Content -LiteralPath $apiWebConfig -Raw
-$publishedConfig.configuration.location.'system.webServer'.aspNetCore.processPath=$globalDotnet
+$publishedConfig.SelectSingleNode('/configuration/location/system.webServer/aspNetCore').SetAttribute('processPath',[string]$globalDotnet)
 $publishedConfig.Save($apiWebConfig)
 Add-Type -Path (Join-Path $env:windir 'System32/inetsrv/Microsoft.Web.Administration.dll')
 $manager=New-Object Microsoft.Web.Administration.ServerManager
@@ -54,6 +54,12 @@ try {
     $web=$manager.Sites.Add('SolaraWeb','http','127.0.0.1:8081:',(Join-Path $root 'web'))
     $web.Applications['/'].ApplicationPoolName='SolaraWeb'
     $web.ServerAutoStart=$false
+    foreach ($siteName in @('SolaraApi','SolaraWeb')) {
+        $anonymous=$manager.GetApplicationHostConfiguration().GetSection('system.webServer/security/authentication/anonymousAuthentication',$siteName)
+        $anonymous['enabled']=$true
+        $anonymous['userName']=''
+        $anonymous['password']=''
+    }
     $manager.CommitChanges()
     # Read/execute access only; application identities cannot modify their published files.
     foreach ($pair in @(@('SolaraApi','api'),@('SolaraWeb','web'))) {

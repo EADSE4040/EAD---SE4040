@@ -1,0 +1,158 @@
+{
+  "capturedUtc": "2026-09-28T14:37:08.257Z",
+  "description": "Read-only evidence from the running local deployment; this is a generated snapshot, not the MongoDB administration UI.",
+  "database": "SolarTrading",
+  "replicaSet": "rs0",
+  "collections": [
+    {
+      "name": "Users",
+      "count": 7,
+      "indexes": [
+        {
+          "name": "_id_",
+          "key": {
+            "_id": 1
+          },
+          "unique": false
+        },
+        {
+          "name": "Email_1",
+          "key": {
+            "Email": 1
+          },
+          "unique": true
+        }
+      ]
+    },
+    {
+      "name": "SolarStationInfo",
+      "count": 3,
+      "indexes": [
+        {
+          "name": "_id_",
+          "key": {
+            "_id": 1
+          },
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "EnergyBookingSlots",
+      "count": 3,
+      "indexes": [
+        {
+          "name": "_id_",
+          "key": {
+            "_id": 1
+          },
+          "unique": false
+        },
+        {
+          "name": "StationId_1_Start_1",
+          "key": {
+            "StationId": 1,
+            "Start": 1
+          },
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "EnergyReservations",
+      "count": 7,
+      "indexes": [
+        {
+          "name": "_id_",
+          "key": {
+            "_id": 1
+          },
+          "unique": false
+        },
+        {
+          "name": "ProsumerId_1_Status_1_Start_1",
+          "key": {
+            "ProsumerId": 1,
+            "Status": 1,
+            "Start": 1
+          },
+          "unique": false
+        },
+        {
+          "name": "StationId_1_Status_1",
+          "key": {
+            "StationId": 1,
+            "Status": 1
+          },
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "AuditLog",
+      "count": 25,
+      "indexes": [
+        {
+          "name": "_id_",
+          "key": {
+            "_id": 1
+          },
+          "unique": false
+        }
+      ]
+    }
+  ],
+  "stations": [
+    {
+      "Name": "Colombo Solar Hub (demo)",
+      "Latitude": 6.9271,
+      "Longitude": 79.8612,
+      "CapacityKw": 120,
+      "BatterySlots": 6,
+      "Active": true
+    },
+    {
+      "Name": "Colombo Solar Hub (demo)",
+      "Latitude": 6.9271,
+      "Longitude": 79.8612,
+      "CapacityKw": 120,
+      "BatterySlots": 6,
+      "Active": true
+    },
+    {
+      "Name": "Colombo Solar Hub (demo)",
+      "Latitude": 6.9271,
+      "Longitude": 79.8612,
+      "CapacityKw": 120,
+      "BatterySlots": 6,
+      "Active": true
+    }
+  ],
+  "reservationStates": [
+    {
+      "_id": "Approved",
+      "count": 3
+    },
+    {
+      "_id": "Pending",
+      "count": 4
+    }
+  ],
+  "http": [
+    {
+      "url": "http://127.0.0.1:8080/api/health",
+      "status": 200,
+      "server": "Microsoft-IIS/10.0",
+      "body": {
+        "status": "healthy",
+        "database": "connected",
+        "utc": "2026-09-28T14:37:08.7681249Z"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:8081",
+      "status": 200,
+      "server": "Microsoft-IIS/10.0"
+    }
+  ]
+}

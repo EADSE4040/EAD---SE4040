@@ -28,6 +28,9 @@ public final class MapActivity extends Activity implements OnMapReadyCallback {
   @Override
   public void onCreate(Bundle state) {
     super.onCreate(state);
+    getWindow().getDecorView().setSystemUiVisibility(
+        android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            | android.view.View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
     LinearLayout root = new LinearLayout(this);
     root.setOrientation(LinearLayout.VERTICAL);
     root.setOnApplyWindowInsetsListener(
