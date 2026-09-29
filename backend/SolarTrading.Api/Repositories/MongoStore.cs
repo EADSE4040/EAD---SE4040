@@ -20,7 +20,6 @@ public sealed class MongoStore
     public MongoStore(IConfiguration config)
     {
         var settings = MongoClientSettings.FromConnectionString(config["Mongo:ConnectionString"]);
-        settings.ServerSelectionTimeout = TimeSpan.FromSeconds(5);
         Client = new MongoClient(settings);
         Database = Client.GetDatabase(config["Mongo:Database"] ?? "SolarTrading");
         Users = Database.GetCollection<User>("Users");

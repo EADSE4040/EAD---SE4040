@@ -3,7 +3,6 @@ $ErrorActionPreference='Stop'
 $repo=Split-Path $PSScriptRoot -Parent
 $env:ANDROID_HOME=Join-Path $repo '.tools/android-sdk'
 $env:ANDROID_SDK_ROOT=$env:ANDROID_HOME
-$env:ANDROID_USER_HOME=Join-Path $repo '.tools/android-user'
 $env:ANDROID_AVD_HOME=Join-Path $repo '.tools/android-avd'
 $emulator=Join-Path $env:ANDROID_HOME 'emulator/emulator.exe'
 $config=Join-Path $env:ANDROID_AVD_HOME 'Solara_API35.avd/config.ini'

@@ -50,7 +50,7 @@ public final class MainActivity extends Activity {
     getWindow().getDecorView().setSystemUiVisibility(
         View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
     store = new LocalStore(this);
-    String url = getPreferences(MODE_PRIVATE).getString("api", "http://10.0.2.2:5080/api");
+    String url = getPreferences(MODE_PRIVATE).getString("api", "http://10.0.2.2:8080/api");
     api = new ApiClient(this, url);
     try {
       String saved = store.readSession();

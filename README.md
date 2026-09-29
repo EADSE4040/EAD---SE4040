@@ -35,7 +35,7 @@ For this already-provisioned workspace, `powershell -ExecutionPolicy Bypass -Fil
 3. Run `dotnet run --project backend/SolarTrading.Api`. When using the downloaded portable SDK, use `.tools/dotnet/dotnet.exe` instead of `dotnet`.
 4. In `frontend/web`, run `npm ci` then `npm run dev`. Open `http://127.0.0.1:5173` and sign in with the administrator created at startup.
 5. Create Grid Operator accounts, nodes and future slots through the portal. Prosumers register in Android; Backoffice activates them in the portal.
-6. Open `frontend/android` in Android Studio. Copy `maps.properties.example` to `maps.properties`, enter your restricted key, and build/run. The default API is `http://10.0.2.2:5080/api` for the emulator. Change it in Connection settings for a physical device or IIS. Release builds require HTTPS.
+6. Open `frontend/android` in Android Studio, or run `powershell -ExecutionPolicy Bypass -File scripts/run-android.ps1` to start the configured emulator, build with the workspace Java 17 installation, install the current debug APK and open it. Copy `maps.properties.example` to `maps.properties` and enter your restricted key for maps. The default emulator API is the IIS deployment at `http://10.0.2.2:8080/api`; change it in Connection settings when using the local development API or a physical device. Release builds require HTTPS.
 
 Both clients expose meaningful API errors. Android encrypts its SQLite session with Android Keystore; raw passwords are never persisted locally. Cached station data is labelled offline and never authorizes bookings or transfers.
 
