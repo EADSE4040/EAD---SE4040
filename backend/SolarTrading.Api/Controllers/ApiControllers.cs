@@ -98,6 +98,10 @@ public sealed class StationsController(GridService service) : ApiController
     [HttpPost("{id}/deactivate"), Authorize(Roles = Roles.Backoffice)]
     public Task<bool> Deactivate(string id, CancellationToken ct) => service.Active(id, false, Actor, ct);
 
+    // Soft-delete a node while preserving historical bookings and enforcing active-booking protection.
+    [HttpDelete("{id}"), Authorize(Roles = Roles.Backoffice)]
+    public Task<bool> Delete(string id, CancellationToken ct) => service.Active(id, false, Actor, ct);
+
     // Reactivate an archived node without changing its reservation history.
     [HttpPost("{id}/activate"), Authorize(Roles = Roles.Backoffice)]
     public Task<bool> Activate(string id, CancellationToken ct) => service.Active(id, true, Actor, ct);

@@ -44,6 +44,7 @@ public final class MainActivity extends Activity {
   private final DateTimeFormatter timeFormat =
       DateTimeFormatter.ofPattern("dd MMM yyyy, HH:mm").withZone(ZoneId.systemDefault());
 
+  // Restore the encrypted session and validate it with the central API.
   @Override
   public void onCreate(Bundle state) {
     super.onCreate(state);
@@ -80,6 +81,7 @@ public final class MainActivity extends Activity {
     }
   }
 
+  // Release network, database and rendering resources owned by this activity.
   @Override
   protected void onDestroy() {
     api.close();
@@ -87,10 +89,12 @@ public final class MainActivity extends Activity {
     super.onDestroy();
   }
 
+  // Convert layout dimensions to density-independent screen pixels.
   private int dp(int value) {
     return Math.round(value * getResources().getDisplayMetrics().density);
   }
 
+  // Escape user search text before placing it in a REST query.
   private String encode(String value) {
     try {
       return URLEncoder.encode(value, "UTF-8");
@@ -99,6 +103,7 @@ public final class MainActivity extends Activity {
     }
   }
 
+  // Build a request object from alternating field names and values.
   private JSONObject json(Object... pairs) {
     JSONObject object = new JSONObject();
     try {
@@ -109,10 +114,12 @@ public final class MainActivity extends Activity {
     return object;
   }
 
+  // Read an optional display field without propagating missing JSON values.
   private String text(JSONObject item, String key) {
     return item.optString(key, "");
   }
 
+  // Format server UTC timestamps in the device time zone.
   private String date(String value) {
     try {
       return timeFormat.format(Instant.parse(value));
@@ -121,10 +128,12 @@ public final class MainActivity extends Activity {
     }
   }
 
+  // Choose staff-only navigation; the API independently enforces authorization.
   private boolean operator() {
     return user != null && !"Prosumer".equals(text(user, "role"));
   }
 
+  // Create the rounded background used by native cards and controls.
   private GradientDrawable background(int color, int radius) {
     GradientDrawable d = new GradientDrawable();
     d.setColor(color);
@@ -132,6 +141,7 @@ public final class MainActivity extends Activity {
     return d;
   }
 
+  // Build a consistently styled native text label.
   private TextView label(String text, int size, int color, boolean bold) {
     TextView view = new TextView(this);
     view.setText(text);
@@ -142,6 +152,7 @@ public final class MainActivity extends Activity {
     return view;
   }
 
+  // Create a full-width action button and bind its click handler.
   private Button button(String title, Runnable action) {
     Button b = new Button(this);
     b.setText(title);
@@ -156,6 +167,7 @@ public final class MainActivity extends Activity {
     return b;
   }
 
+  // Add a labelled, typed input with the current form value.
   private EditText input(LinearLayout into, String title, int type, String value) {
     into.addView(label(title, 12, MUTED, true));
     EditText e = new EditText(this);
@@ -174,6 +186,7 @@ public final class MainActivity extends Activity {
     return e;
   }
 
+  // Append a padded content group to the active screen.
   private LinearLayout card() {
     LinearLayout c = new LinearLayout(this);
     c.setOrientation(LinearLayout.VERTICAL);
@@ -186,6 +199,7 @@ public final class MainActivity extends Activity {
     return c;
   }
 
+  // Rebuild navigation and invalidate callbacks from the previous screen.
   private void shell(String title) {
     generation++;
     page = title;
@@ -260,6 +274,7 @@ public final class MainActivity extends Activity {
     root.requestApplyInsets();
   }
 
+  // Display the actionable error and scroll it into view.
   private void showError(String error) {
     message.setText(error);
     message.setVisibility(View.VISIBLE);
@@ -267,6 +282,7 @@ public final class MainActivity extends Activity {
         new android.graphics.Rect(0, 0, message.getWidth(), message.getHeight()), true));
   }
 
+  // Send a REST request and reject stale screen callbacks or expired sessions.
   private void call(String method, String path, JSONObject body, ApiClient.Callback callback) {
     int current = generation;
     progress.setVisibility(View.VISIBLE);
@@ -286,6 +302,7 @@ public final class MainActivity extends Activity {
         });
   }
 
+  // Render sign-in controls and persist the server-issued session after authentication.
   private void login() {
     shell("Prosumer & Operator access");
     LinearLayout c = card();
@@ -341,6 +358,7 @@ public final class MainActivity extends Activity {
     c.addView(button("Connection settings", this::settings));
   }
 
+  // Collect NIC and profile details, then submit a pending activation request.
   private void register() {
     shell("Create your prosumer account");
     LinearLayout c = card();
@@ -401,6 +419,7 @@ public final class MainActivity extends Activity {
     c.addView(button("Back to sign in", this::login));
   }
 
+  // Display role-specific navigation and live reservation counts from the API.
   private void dashboard() {
     shell("Overview");
     content.addView(label("Hello, " + text(user, "name"), 25, GREEN, true));
@@ -434,6 +453,7 @@ public final class MainActivity extends Activity {
         });
   }
 
+  // Show search and status controls for the reservation list.
   private void bookings(String statusFilter, String search) {
     shell("Energy bookings");
     LinearLayout filter = card();
@@ -461,6 +481,7 @@ public final class MainActivity extends Activity {
     loadBookings(statusFilter, search, 1);
   }
 
+  // Fetch the requested page of bookings and expose permitted booking actions.
   private void loadBookings(String statusFilter, String search, int number) {
     String query =
         "?pageSize=20&page="
@@ -545,6 +566,7 @@ public final class MainActivity extends Activity {
         });
   }
 
+  // Load available server slots and submit a new or modified reservation.
   private void bookingForm(JSONObject booking) {
     shell(booking == null ? "Reserve energy" : "Modify reservation");
     content.addView(label("Choose your trading window", 23, GREEN, true));
@@ -662,6 +684,7 @@ public final class MainActivity extends Activity {
         });
   }
 
+  // Display the server-confirmed reservation state after an operation.
   private void summary(JSONObject b) {
     shell("Reservation summary");
     LinearLayout c = card();
@@ -686,6 +709,7 @@ public final class MainActivity extends Activity {
     c.addView(button("Back to bookings", () -> bookings("", "")));
   }
 
+  // Render the approved reservation payload as a scannable QR bitmap.
   private void qr(JSONObject booking) {
     shell("Transaction QR");
     call(
@@ -723,6 +747,7 @@ public final class MainActivity extends Activity {
         });
   }
 
+  // Display profile, maps, operator tools and sign-out navigation.
   private void more() {
     shell("Account & tools");
     LinearLayout c = card();
@@ -760,6 +785,7 @@ public final class MainActivity extends Activity {
     c.addView(button("Sign out", this::logout));
   }
 
+  // Edit the signed-in profile or request account deactivation through the API.
   private void profile() {
     shell("Edit profile");
     call(
@@ -811,6 +837,7 @@ public final class MainActivity extends Activity {
         });
   }
 
+  // Start the camera QR scanner for an authenticated staff user.
   private void scan() {
     if (!operator()) return;
     new IntentIntegrator(this)
@@ -821,6 +848,7 @@ public final class MainActivity extends Activity {
         .initiateScan();
   }
 
+  // Forward a decoded camera payload to live server verification.
   @Override
   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
@@ -829,6 +857,7 @@ public final class MainActivity extends Activity {
       verifyForm(result.getContents());
   }
 
+  // Verify the scanned or entered payload before enabling transfer completion.
   private void verifyForm(String scanned) {
     shell("Verify energy transfer");
     LinearLayout c = card();
@@ -855,6 +884,7 @@ public final class MainActivity extends Activity {
     if (!scanned.isEmpty()) verify.performClick();
   }
 
+  // Confirm measured energy and record a single completion through the API.
   private void transfer(JSONObject booking, String qr) {
     shell("Finalize transfer");
     LinearLayout c = card();
@@ -907,6 +937,7 @@ public final class MainActivity extends Activity {
     c.addView(complete);
   }
 
+  // Validate and save the API connection address for this installation.
   private void settings() {
     LinearLayout form = new LinearLayout(this);
     form.setOrientation(LinearLayout.VERTICAL);
@@ -953,6 +984,7 @@ public final class MainActivity extends Activity {
     dialog.show();
   }
 
+  // Clear the local session and return to the sign-in screen.
   private void logout() {
     store.clearSession();
     api.token = "";

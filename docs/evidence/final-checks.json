@@ -1,0 +1,15 @@
+{
+  "verifiedDate": "2026-09-30",
+  "backendIntegrationChecks": 35,
+  "iisHttpAssertions": 47,
+  "webProductionBuild": "passed",
+  "androidDebugBuild": "passed",
+  "androidLint": {
+    "Error": 0,
+    "Warning": 3,
+    "Fatal": 0
+  },
+  "nodeDeletion": "Backoffice-only soft delete; active bookings protected; history retained",
+  "contribution": "Team-declared equal thirds",
+  "video": "Deferred at user request"
+}

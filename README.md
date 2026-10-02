@@ -74,11 +74,11 @@ For this Windows PC, run `scripts/prepare-iis.ps1` to build the loopback deploym
 
 Read [assignment checklist](docs/planning/assignment-checklist.md), [system design](docs/design.md), and [submission checklist](docs/submission.md). A passing build is not proof of IIS hosting, device features, or viva readiness.
 
-Use the [five-minute demonstration guide](docs/demo-guide.md) after deployment and device verification. The generated `artifacts/report-with-source.md` is a draft with screenshots and a complete source-text appendix; complete the actual contribution and device/deployment evidence before submission.
+Use the [five-minute demonstration guide](docs/demo-guide.md) after deployment and device verification. The professional report is generated from `docs/report.md` and the verification record. `artifacts/Solara-SE4040-Report.pdf` includes figures, screenshots, references and a source-text appendix. The matching Markdown edition is `artifacts/report-with-source.md`.
 
-Confirmed three-member group: Kojithan P.Y (IT22264220), Baskaran V (IT22172600), Nishara T (IT22223876). Actual contributions remain outstanding. See [contribution record](docs/contributions.md).
+Confirmed three-member group: Kojithan P.Y (IT22264220), Baskaran V (IT22172600), Nishara T (IT22223876). The team declares equal contribution: one third (33 1/3%) per member. See [contribution record](docs/contributions.md).
 
-Demo video (maximum five minutes): **awaiting recording and upload by the team**.
+Demo video (maximum five minutes): **deferred at the team's request; not included in this submission package**.
 
 AI disclosure: this repository includes AI-assisted planning and implementation at the user's request. The assignment brief restricts AI to planning. This disclosure must accurately reflect how the work was produced; the team must resolve compliance with its lecturer before submission.
 

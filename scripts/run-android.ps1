@@ -19,6 +19,15 @@ if (!(Test-Path -LiteralPath $adb)) { throw 'Android SDK platform-tools are miss
 $gradle = Join-Path $repo '.tools/gradle/gradle-8.13/bin/gradle.bat'
 if (!(Test-Path -LiteralPath $gradle)) { throw 'Workspace Gradle 8.13 is missing.' }
 
+if (!$SkipBuild) {
+    Push-Location (Join-Path $repo 'frontend/android')
+    try {
+        & $gradle --no-daemon assembleDebug
+        if ($LASTEXITCODE -ne 0) { throw 'Android build or installation failed.' }
+    }
+    finally { Pop-Location }
+}
+
 & (Join-Path $PSScriptRoot 'start-android-emulator.ps1') -ShowWindow
 
 Write-Output 'Waiting for the Android emulator to finish booting...'
@@ -29,14 +38,9 @@ do {
 } until ($booted -eq '1' -or (Get-Date) -ge $deadline)
 if ($booted -ne '1') { throw 'The emulator did not finish booting within three minutes.' }
 
-if (!$SkipBuild) {
-    Push-Location (Join-Path $repo 'frontend/android')
-    try {
-        & $gradle --no-daemon installDebug
-        if ($LASTEXITCODE -ne 0) { throw 'Android build or installation failed.' }
-    }
-    finally { Pop-Location }
-}
+$apk=Join-Path $repo 'frontend/android/app/build/outputs/apk/debug/app-debug.apk'
+& $adb install -r $apk
+if ($LASTEXITCODE -ne 0) { throw 'Android installation failed. Confirm the same debug signing certificate is being used.' }
 
 & $adb shell am start -n 'com.solara.microgrid/.MainActivity' | Out-Null
 if ($LASTEXITCODE -ne 0) { throw 'Solara could not be opened in the emulator.' }

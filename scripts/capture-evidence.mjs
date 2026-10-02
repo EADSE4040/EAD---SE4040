@@ -9,10 +9,10 @@ const require=createRequire(path.join(root,'.tools/report-tools/package.json'));
 const {MongoClient}=require('mongodb');
 const local=JSON.parse(await fs.readFile(path.join(root,'backend/SolarTrading.Api/appsettings.Local.json'),'utf8'));
 const defaults=JSON.parse(await fs.readFile(path.join(root,'backend/SolarTrading.Api/appsettings.json'),'utf8'));
-const client=new MongoClient(local.Mongo.ConnectionString);
+const client=new MongoClient(process.env.EVIDENCE_MONGO_URL || local.Mongo.ConnectionString, { serverSelectionTimeoutMS: 10000 });
 const evidence={capturedUtc:new Date().toISOString(),description:'Read-only evidence from the running local deployment; this is a generated snapshot, not the MongoDB administration UI.'};
 try {
- await client.connect(); const db=client.db(local.Mongo.Database||defaults.Mongo.Database);
+ await client.connect(); const db=client.db(process.env.EVIDENCE_MONGO_DATABASE||local.Mongo.Database||defaults.Mongo.Database);
  evidence.database=db.databaseName;
  evidence.replicaSet=(await db.admin().command({hello:1})).setName;
  evidence.collections=[];

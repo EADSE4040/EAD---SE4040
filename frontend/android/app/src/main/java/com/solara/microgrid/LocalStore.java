@@ -20,10 +20,12 @@ import javax.crypto.spec.GCMParameterSpec;
  * key.
  */
 public final class LocalStore extends SQLiteOpenHelper {
+  // Open the versioned SQLite database used for sessions and reference data.
   public LocalStore(Context context) {
     super(context, "solara.db", null, 1);
   }
 
+  // Create the local key-value cache schema on first launch.
   @Override
   public void onCreate(SQLiteDatabase db) {
     db.execSQL(
@@ -31,9 +33,11 @@ public final class LocalStore extends SQLiteOpenHelper {
             + " NULL)");
   }
 
+  // Reserve the schema migration hook; version one has no older schema to migrate.
   @Override
   public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {}
 
+  // Insert or replace a cached value together with its update time.
   public void put(String name, String value) {
     ContentValues row = new ContentValues();
     row.put("name", name);
@@ -42,6 +46,7 @@ public final class LocalStore extends SQLiteOpenHelper {
     getWritableDatabase().insertWithOnConflict("cache", null, row, SQLiteDatabase.CONFLICT_REPLACE);
   }
 
+  // Read a cache entry using a parameterized SQLite query.
   public String get(String name) {
     try (Cursor c =
         getReadableDatabase()
@@ -51,10 +56,12 @@ public final class LocalStore extends SQLiteOpenHelper {
     }
   }
 
+  // Remove cached account and reference data when the user signs out.
   public void clearSession() {
     getWritableDatabase().delete("cache", null, null);
   }
 
+  // Retrieve or create a non-exportable AES key in Android Keystore.
   private SecretKey key() throws Exception {
     KeyStore store = KeyStore.getInstance("AndroidKeyStore");
     store.load(null);
@@ -72,6 +79,7 @@ public final class LocalStore extends SQLiteOpenHelper {
     return (SecretKey) store.getKey("solara.session", null);
   }
 
+  // Encrypt session JSON with AES-GCM before writing it to SQLite.
   public void saveSession(String json) throws Exception {
     Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
     cipher.init(Cipher.ENCRYPT_MODE, key());
@@ -83,6 +91,7 @@ public final class LocalStore extends SQLiteOpenHelper {
                 cipher.doFinal(json.getBytes(StandardCharsets.UTF_8)), Base64.NO_WRAP));
   }
 
+  // Decrypt the saved session and discard invalid or unreadable data.
   public String readSession() {
     try {
       String encrypted = get("session");

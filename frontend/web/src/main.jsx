@@ -56,6 +56,7 @@ const numeric = new Set([
   "energyKwh",
   "transferredKwh",
 ]);
+// Render a status label with shared semantic styling.
 function Badge({ children }) {
   return (
     <span className={`status status-${String(children).toLowerCase()}`}>
@@ -63,6 +64,7 @@ function Badge({ children }) {
     </span>
   );
 }
+// Explain an empty result and expose an optional next action.
 function Empty({
   title = "Nothing here yet",
   text = "New records will appear here as your microgrid grows.",
@@ -75,6 +77,7 @@ function Empty({
     </div>
   );
 }
+// Render accessible table headings and row content.
 function Table({ headings, children }) {
   return (
     <div className="table-responsive">
@@ -91,6 +94,7 @@ function Table({ headings, children }) {
     </div>
   );
 }
+// Choose the native form control for a field specification.
 function Field({ spec, initial }) {
   const [name, label, type = "text", options] = spec;
   return (
@@ -146,6 +150,7 @@ function Field({ spec, initial }) {
     </label>
   );
 }
+// Validate and submit dialog fields while retaining API errors.
 function Modal({ title, fields, initial = {}, onSubmit, close, children }) {
   const dialogRef = useRef(null);
   const [busy, setBusy] = useState(false),
@@ -179,6 +184,7 @@ function Modal({ title, fields, initial = {}, onSubmit, close, children }) {
       previous?.focus();
     };
   }, [busy, close]);
+  // Submit form values and retain actionable validation feedback.
   async function submit(e) {
     e.preventDefault();
     setError("");
@@ -245,9 +251,11 @@ function Modal({ title, fields, initial = {}, onSubmit, close, children }) {
     </div>
   );
 }
+// Authenticate staff through the API and return the resulting session.
 function Login({ onLogin }) {
   const [busy, setBusy] = useState(false),
     [error, setError] = useState("");
+  // Submit form values and retain actionable validation feedback.
   async function submit(e) {
     e.preventDefault();
     setBusy(true);
@@ -323,6 +331,7 @@ function Login({ onLogin }) {
     </div>
   );
 }
+// Coordinate authenticated navigation, server data and staff operations.
 function App() {
   const [session, setSession] = useState(() => {
     try {
@@ -361,6 +370,7 @@ function App() {
   const api = (path, method = "GET", body) =>
     request(path, { method, body, token: session?.token });
   const refresh = () => setRevision((r) => r + 1);
+  // Apply a server mutation and refresh the affected portal data.
   async function act(
     path,
     method,
@@ -386,6 +396,7 @@ function App() {
     const controller = new AbortController();
     setLoading(true);
     setError("");
+    // Fetch the datasets needed by the current role and screen.
     async function load() {
       try {
         const call = (path) =>
@@ -454,6 +465,7 @@ function App() {
     ["phone", "Phone"],
     ["address", "Address", "textarea"],
   ];
+  // Prepare a booking form using active prosumers and published slots.
   function bookModal(booking) {
     const available = slots.map((s) => ({
       value: s.id,
@@ -499,6 +511,7 @@ function App() {
         ),
     });
   }
+  // Confirm the selected state change before sending it to the API.
   function confirmAction(
     title,
     path,
@@ -957,6 +970,20 @@ function App() {
                           {n.active ? "Deactivate" : "Activate"}
                         </button>
                       )}
+                      {admin && n.active && (
+                        <button
+                          className="text-btn"
+                          onClick={() => confirmAction(
+                            "Delete node from active listings (retain booking history)",
+                            "/stations/" + n.id,
+                            "Node removed from active listings; booking history retained",
+                            false,
+                            "DELETE",
+                          )}
+                        >
+                          Delete node
+                        </button>
+                      )}
                     </footer>
                   </section>
                 ))}
@@ -1356,11 +1383,13 @@ function App() {
     </div>
   );
 }
+// Verify transaction payloads and record operator-confirmed transfers.
 function Verify({ api, onComplete }) {
   const [code, setCode] = useState(""),
     [booking, setBooking] = useState(null),
     [error, setError] = useState(""),
     [busy, setBusy] = useState(false);
+  // Check the entered QR payload against the current server record.
   async function verify(e) {
     e.preventDefault();
     setBusy(true);
@@ -1376,6 +1405,7 @@ function Verify({ api, onComplete }) {
       setBusy(false);
     }
   }
+  // Submit measured energy to the server for one-time transfer completion.
   async function complete(e) {
     e.preventDefault();
     setBusy(true);

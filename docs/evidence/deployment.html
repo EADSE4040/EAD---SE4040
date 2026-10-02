@@ -1,14 +1,22 @@
-<!doctype html><html><meta charset="utf-8"><title>Solara - deployment evidence</title><style>body{font:16px system-ui;background:#f5f7f1;color:#24372f;margin:36px auto;max-width:1100px}h1,h2{color:#205d46}section{background:white;padding:24px;border-radius:14px;margin:18px 0}table{border-collapse:collapse;width:100%;font-size:14px}td,th{text-align:left;padding:12px;border-bottom:1px solid #ddd}th{background:#edf3ec}small{color:#52685b}li{margin:14px 0}pre{font-size:13px;white-space:pre-wrap}</style><h1>Solara | Deployment evidence</h1><small>Captured 2026-09-28T14:37:08.257Z. Read-only generated snapshot of actual local services.</small><section><h2>IIS health and reachability</h2><ul><li><b>http://127.0.0.1:8080/api/health</b><br>HTTP 200 | Microsoft-IIS/10.0<pre>{
+<!doctype html><html><meta charset="utf-8"><title>Solara - deployment evidence</title><style>body{font:16px system-ui;background:#f5f7f1;color:#24372f;margin:36px auto;max-width:1100px}h1,h2{color:#205d46}section{background:white;padding:24px;border-radius:14px;margin:18px 0}table{border-collapse:collapse;width:100%;font-size:14px}td,th{text-align:left;padding:12px;border-bottom:1px solid #ddd}th{background:#edf3ec}small{color:#52685b}li{margin:14px 0}pre{font-size:13px;white-space:pre-wrap}</style><h1>Solara | Deployment evidence</h1><small>Captured 2026-09-29T20:12:09.813Z. Read-only generated snapshot of actual local services.</small><section><h2>IIS health and reachability</h2><ul><li><b>http://127.0.0.1:8080/api/health</b><br>HTTP 200 | Microsoft-IIS/10.0<pre>{
   &quot;status&quot;: &quot;healthy&quot;,
   &quot;database&quot;: &quot;connected&quot;,
-  &quot;utc&quot;: &quot;2026-09-28T14:37:08.7681249Z&quot;
-}</pre></li><li><b>http://127.0.0.1:8081</b><br>HTTP 200 | Microsoft-IIS/10.0</li></ul></section><section><h2>MongoDB: SolarTrading / replica set rs0</h2><table><tr><th>Collection</th><th>Records</th><th>Indexes</th></tr><tr><td>Users</td><td>7</td><td>_id_, Email_1</td></tr><tr><td>SolarStationInfo</td><td>3</td><td>_id_</td></tr><tr><td>EnergyBookingSlots</td><td>3</td><td>_id_, StationId_1_Start_1</td></tr><tr><td>EnergyReservations</td><td>7</td><td>_id_, ProsumerId_1_Status_1_Start_1, StationId_1_Status_1</td></tr><tr><td>AuditLog</td><td>25</td><td>_id_</td></tr></table></section><section><h2>Reservation states</h2><pre>[
+  &quot;utc&quot;: &quot;2026-09-29T20:12:10.9719796Z&quot;
+}</pre></li><li><b>http://127.0.0.1:8081</b><br>HTTP 200 | Microsoft-IIS/10.0</li></ul></section><section><h2>MongoDB: SolarTrading / replica set rs0</h2><table><tr><th>Collection</th><th>Records</th><th>Indexes</th></tr><tr><td>Users</td><td>12</td><td>_id_, Email_1</td></tr><tr><td>SolarStationInfo</td><td>7</td><td>_id_</td></tr><tr><td>EnergyBookingSlots</td><td>6</td><td>_id_, StationId_1_Start_1</td></tr><tr><td>EnergyReservations</td><td>12</td><td>_id_, ProsumerId_1_Status_1_Start_1, StationId_1_Status_1</td></tr><tr><td>AuditLog</td><td>54</td><td>_id_</td></tr></table></section><section><h2>Reservation states</h2><pre>[
   {
     &quot;_id&quot;: &quot;Approved&quot;,
-    &quot;count&quot;: 3
+    &quot;count&quot;: 2
+  },
+  {
+    &quot;_id&quot;: &quot;Cancelled&quot;,
+    &quot;count&quot;: 1
+  },
+  {
+    &quot;_id&quot;: &quot;Expired&quot;,
+    &quot;count&quot;: 8
   },
   {
     &quot;_id&quot;: &quot;Pending&quot;,
-    &quot;count&quot;: 4
+    &quot;count&quot;: 1
   }
 ]</pre><small>Synthetic demonstration records. Sensitive fields are excluded.</small></section></html>

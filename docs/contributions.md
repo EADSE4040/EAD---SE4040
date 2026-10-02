@@ -1,11 +1,19 @@
-# Team members and contribution evidence
+# Team contribution statement
 
-| IT number | Member | Actual contribution and evidence |
+The team has confirmed an equal contribution arrangement. Each member is credited with one third (33 1/3%) of the overall project contribution. The allocation below records the team declaration; it does not assert a separate module or commit history for any member.
+
+| IT number | Member | Declared share |
 |---|---|---|
-| IT22264220 | Kojithan P.Y | Awaiting member-authored description and relevant commits |
-| IT22172600 | Baskaran V | Awaiting member-authored description and relevant commits |
-| IT22223876 | Nishara T | Awaiting member-authored description and relevant commits |
+| IT22264220 | Kojithan P.Y | 1/3 (33 1/3%) |
+| IT22172600 | Baskaran V | 1/3 (33 1/3%) |
+| IT22223876 | Nishara T | 1/3 (33 1/3%) |
 
-The user confirmed that this group has three members. Confirm the three-member arrangement with the lecturer because the brief describes four-member groups. This table records identities, not an invented division of completed work. Each member must describe their actual work, design decisions, verification and challenges in their own words.
+The project is presented as a shared submission. Each member remains responsible for explaining the system, its design decisions and the work they performed during the individual viva. Equal contribution does not imply identical individual assessment marks.
 
-AI assistance was used for both planning and implementation at the user's request. Record this accurately and resolve the brief's planning-only restriction with the lecturer. Do not attribute AI-generated implementation to an individual as independently authored work.
+## Development assistance
+
+AI tools were used for planning, implementation assistance, debugging and report preparation. The assignment brief permits AI assistance during planning only. This statement records actual assistance and is not a claim of compliance; the team must resolve the discrepancy with the lecturer before submission. AI-assisted code is not represented as independently authored student work.
+
+## Group composition
+
+The confirmed group contains three members, while the assignment brief specifies four. The team must obtain confirmation of the accepted group arrangement.

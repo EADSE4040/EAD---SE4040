@@ -1,19 +1,19 @@
 {
-  "capturedUtc": "2026-09-28T14:37:08.257Z",
+  "capturedUtc": "2026-09-29T20:12:09.813Z",
   "description": "Read-only evidence from the running local deployment; this is a generated snapshot, not the MongoDB administration UI.",
   "database": "SolarTrading",
   "replicaSet": "rs0",
   "collections": [
     {
       "name": "Users",
-      "count": 7,
+      "count": 12,
       "indexes": [
         {
           "name": "_id_",
           "key": {
             "_id": 1
           },
-          "unique": false
+          "unique": true
         },
         {
           "name": "Email_1",
@@ -26,27 +26,27 @@
     },
     {
       "name": "SolarStationInfo",
-      "count": 3,
+      "count": 7,
       "indexes": [
         {
           "name": "_id_",
           "key": {
             "_id": 1
           },
-          "unique": false
+          "unique": true
         }
       ]
     },
     {
       "name": "EnergyBookingSlots",
-      "count": 3,
+      "count": 6,
       "indexes": [
         {
           "name": "_id_",
           "key": {
             "_id": 1
           },
-          "unique": false
+          "unique": true
         },
         {
           "name": "StationId_1_Start_1",
@@ -60,14 +60,14 @@
     },
     {
       "name": "EnergyReservations",
-      "count": 7,
+      "count": 12,
       "indexes": [
         {
           "name": "_id_",
           "key": {
             "_id": 1
           },
-          "unique": false
+          "unique": true
         },
         {
           "name": "ProsumerId_1_Status_1_Start_1",
@@ -90,14 +90,14 @@
     },
     {
       "name": "AuditLog",
-      "count": 25,
+      "count": 54,
       "indexes": [
         {
           "name": "_id_",
           "key": {
             "_id": 1
           },
-          "unique": false
+          "unique": true
         }
       ]
     }
@@ -126,16 +126,56 @@
       "CapacityKw": 120,
       "BatterySlots": 6,
       "Active": true
+    },
+    {
+      "Name": "Mobile Transfer Test Node",
+      "Latitude": 6.9271,
+      "Longitude": 79.8612,
+      "CapacityKw": 30,
+      "BatterySlots": 2,
+      "Active": true
+    },
+    {
+      "Name": "Device Verification Hub",
+      "Latitude": 6.9271,
+      "Longitude": 79.8612,
+      "CapacityKw": 30,
+      "BatterySlots": 3,
+      "Active": true
+    },
+    {
+      "Name": "Colombo Solar Hub (demo)",
+      "Latitude": 6.9271,
+      "Longitude": 79.8612,
+      "CapacityKw": 120,
+      "BatterySlots": 6,
+      "Active": true
+    },
+    {
+      "Name": "Soft-delete verification node",
+      "Latitude": 6.9271,
+      "Longitude": 79.8612,
+      "CapacityKw": 120,
+      "BatterySlots": 6,
+      "Active": true
     }
   ],
   "reservationStates": [
     {
       "_id": "Approved",
-      "count": 3
+      "count": 2
+    },
+    {
+      "_id": "Cancelled",
+      "count": 1
+    },
+    {
+      "_id": "Expired",
+      "count": 8
     },
     {
       "_id": "Pending",
-      "count": 4
+      "count": 1
     }
   ],
   "http": [
@@ -146,7 +186,7 @@
       "body": {
         "status": "healthy",
         "database": "connected",
-        "utc": "2026-09-28T14:37:08.7681249Z"
+        "utc": "2026-09-29T20:12:10.9719796Z"
       }
     },
     {

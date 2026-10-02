@@ -7,9 +7,9 @@ $staging=Join-Path $artifactDir ('submission-'+[Guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $staging | Out-Null
 Push-Location $repo
 try {
-    $files=@(& git -c "safe.directory=$($repo.Replace('\','/'))" ls-files)
+    $files=@(& git -c "safe.directory=$($repo.Replace('\','/'))" ls-files --cached --others --exclude-standard)
     if ($LASTEXITCODE -ne 0) { throw 'Unable to enumerate tracked submission files.' }
-    foreach($relative in $files) {
+    foreach($relative in ($files | Sort-Object -Unique)) {
         if($relative -match '(^|/)(\.tools|node_modules|bin|obj|build|dist|\.git)(/|$)' -or $relative -match 'appsettings\.Local\.json$|maps\.properties$|local\.properties$|\.env$') { continue }
         $source=Join-Path $repo $relative
         $destination=Join-Path $staging $relative
@@ -20,7 +20,9 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Report generation failed.' }
     Copy-Item -LiteralPath (Join-Path $artifactDir 'report-with-source.md') -Destination (Join-Path $staging 'report-with-source.md')
     $pdf=Join-Path $artifactDir 'Solara-SE4040-Report.pdf'
-    if(Test-Path -LiteralPath $pdf) { Copy-Item -LiteralPath $pdf -Destination (Join-Path $staging 'Solara-SE4040-Report.pdf') }
+    if(!(Test-Path -LiteralPath $pdf)) { throw 'Generate the final PDF report before packaging.' }
+    Copy-Item -LiteralPath $pdf -Destination (Join-Path $staging 'Solara-SE4040-Report.pdf')
+    Copy-Item -LiteralPath (Join-Path $repo 'docs/screenshots/android-login.png') -Destination (Join-Path $staging 'Opening-Screen.png')
     $zip=Join-Path $artifactDir ($ITNumber+'.zip')
     if(Test-Path -LiteralPath $zip){throw 'A submission ZIP already exists; choose explicitly whether to replace it.'}
     Compress-Archive -Path (Join-Path $staging '*') -DestinationPath $zip

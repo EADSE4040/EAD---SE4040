@@ -1,4 +1,9 @@
-param([switch]$ShowWindow, [string]$CameraImage)
+param(
+    [switch]$ShowWindow,
+    [string]$CameraImage,
+    [ValidateSet('auto','host','swiftshader')][string]$Graphics='auto',
+    [ValidateRange(1024,8192)][int]$MemoryMb=1536
+)
 $ErrorActionPreference='Stop'
 $repo=Split-Path $PSScriptRoot -Parent
 $env:ANDROID_HOME=Join-Path $repo '.tools/android-sdk'
@@ -14,7 +19,7 @@ if($CameraImage) {
     $image=(Resolve-Path -LiteralPath $CameraImage).Path
     $camera='"imagefile:'+$image+'"'
 }
-$arguments=@('-avd','Solara_API35','-no-snapshot','-no-audio','-gpu','swiftshader','-memory','1536','-cores','2','-camera-back',$camera)
+$arguments=@('-avd','Solara_API35','-no-snapshot','-no-audio','-gpu',$Graphics,'-memory',([string]$MemoryMb),'-cores','2','-camera-back',$camera)
 if (!$ShowWindow) { $arguments+='-no-window' }
 $windowStyle=if($ShowWindow){'Normal'}else{'Hidden'}
 $process=Start-Process -FilePath $emulator -ArgumentList $arguments -WindowStyle $windowStyle -RedirectStandardOutput (Join-Path $repo '.tools/emulator.log') -RedirectStandardError (Join-Path $repo '.tools/emulator-error.log') -PassThru

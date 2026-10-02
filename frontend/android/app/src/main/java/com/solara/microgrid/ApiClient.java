@@ -16,6 +16,7 @@ import org.json.JSONTokener;
  */
 public final class ApiClient {
   public interface Callback {
+    // Receive the parsed response, user-facing error and HTTP status on the UI thread.
     void done(Object value, String error, int status);
   }
 
@@ -23,11 +24,13 @@ public final class ApiClient {
   private final ExecutorService executor = Executors.newSingleThreadExecutor();
   public String baseUrl, token = "";
 
+  // Bind asynchronous REST requests to the owning activity and API address.
   public ApiClient(Activity activity, String baseUrl) {
     this.activity = activity;
     this.baseUrl = baseUrl;
   }
 
+  // Run HTTP I/O on a worker and deliver a parsed response on the UI thread.
   public void call(String method, String path, JSONObject body, Callback callback) {
     executor.execute(
         () -> {
@@ -86,6 +89,7 @@ public final class ApiClient {
         });
   }
 
+  // Cancel queued network work when the owning activity is destroyed.
   public void close() {
     executor.shutdownNow();
   }

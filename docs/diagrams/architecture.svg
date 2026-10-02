@@ -36,7 +36,7 @@
 			<path d="M 390,220 L 435,220 Z" style="stroke: rgb(12%,36%,27%); stroke-linecap: butt; stroke-width: 1.2;"/>
 			<polygon points="435 220, 428.9378 223.5, 428.9378 216.5" style="stroke: rgb(12%,36%,27%); stroke-linecap: butt; stroke-width: 1; fill: rgb(12%,36%,27%); fill-rule: evenodd;"/>
 			<text x="190" y="294" style="font-family: Times-Roman; font-size: 9px;fill: rgb(12%,36%,27%); stroke:none;" transform="translate(0,588) scale(1,-1)">REST / JWT</text>
-			<text x="88.5085" y="38" style="font-family: Times-Roman; font-size: 9px;fill: rgb(14%,21%,18%); stroke:none;" transform="translate(0,76) scale(1,-1)">Both clients use the API; neither connects directly to MongoDB.</text>
+			<text x="183.5085" y="38" style="font-family: Times-Roman; font-size: 9px;fill: rgb(14%,21%,18%); stroke:none;" transform="translate(0,76) scale(1,-1)">Both clients use the API; neither connects directly to MongoDB.</text>
 		</g>
 	</g>
 </svg>

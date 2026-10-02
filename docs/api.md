@@ -16,6 +16,7 @@ Base path: `/api`. JSON uses camelCase. Authenticated requests send `Authorizati
 | GET /stations | Any active role | Persisted nodes; optional latitude/longitude/radiusKm (default 25 km) nearby filtering |
 | POST /stations | Backoffice | Register node |
 | PUT /stations/{id} | Staff | Update specifications/schedule |
+| DELETE /stations/{id} | Backoffice | Soft-delete from active listings; preserve history and reject active bookings |
 | POST /stations/{id}/activate, deactivate | Backoffice | Node lifecycle |
 | POST /stations/{id}/slots | Staff | Publish non-overlapping slot |
 | GET /slots | Any active role | Future slots; optional stationId filter |

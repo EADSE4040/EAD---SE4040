@@ -44,6 +44,8 @@ const slot = await call(`/stations/${node.id}/slots`, 'POST', { start: start.toI
 await call('/reservations?from=&to=&page=1&pageSize=15', 'GET', undefined, admin.token);
 let booking = await call('/reservations', 'POST', { slotId: slot.id, energyKwh: 12, direction: 'DropOff' }, prosumer.token);
 await call(`/stations/${node.id}/deactivate`, 'POST', undefined, admin.token, 409);
+await call(`/stations/${node.id}`, 'DELETE', undefined, operator.token, 403);
+await call(`/stations/${node.id}`, 'DELETE', undefined, admin.token, 409);
 await call(`/reservations/${booking.id}/approve`, 'POST', undefined, prosumer.token, 403);
 await call(`/reservations/${booking.id}/approve`, 'POST', undefined, operator.token);
 const qr = await call(`/reservations/${booking.id}/qr`, 'GET', undefined, prosumer.token);
@@ -60,6 +62,13 @@ await call('/auth/me', 'PUT', { name: 'Demo Solar Prosumer', phone: '0000000000'
 await call('/auth/me/deactivate', 'POST', undefined, prosumer.token, 204);
 await call('/auth/me', 'GET', undefined, prosumer.token, 401);
 await call(`/users/${nic}/activate`, 'POST', undefined, admin.token);
+const removable = await call('/stations', 'POST', { ...nodeBody, name: 'Soft-delete verification node' }, admin.token);
+await call(`/stations/${removable.id}`, 'DELETE', undefined, admin.token);
+const visibleNodes = await call('/stations', 'GET', undefined, admin.token);
+assert.ok(!visibleNodes.some(item => item.id === removable.id)); checks++;
+const archivedNodes = await call('/stations?includeInactive=true', 'GET', undefined, admin.token);
+assert.ok(archivedNodes.some(item => item.id === removable.id && !item.active)); checks++;
+await call(`/stations/${removable.id}/activate`, 'POST', undefined, admin.token);
 await fs.writeFile(new URL('../.tools/demo-account.json', import.meta.url), JSON.stringify({ email: prosumerEmail, password, nic }, null, 2));
 console.log(`PASS: ${checks} live HTTP assertions, including role restrictions, activation, booking workflow, QR tampering and revoked sessions.`);
 console.log('Synthetic demo account credentials saved privately in .tools/demo-account.json.');

@@ -12,7 +12,8 @@ from reportlab.lib import colors
 from reportlab.lib.enums import TA_CENTER
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.pagesizes import A4
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak, Table, TableStyle, Image, Preformatted
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak, Table, TableStyle, Image, Preformatted, KeepTogether
+from reportlab.platypus.tableofcontents import TableOfContents
 from reportlab.graphics.shapes import Drawing, Rect, String, Line, Polygon, Circle, Ellipse
 from reportlab.graphics import renderSVG
 from PIL import Image as PILImage
@@ -27,9 +28,9 @@ PALE = colors.HexColor('#edf3ec')
 INK = colors.HexColor('#24372f')
 styles = getSampleStyleSheet()
 styles.add(ParagraphStyle(name='CoverTitle', fontName='Helvetica-Bold', fontSize=28, leading=34, textColor=GREEN, spaceAfter=20))
-styles.add(ParagraphStyle(name='Copy', fontName='Helvetica', fontSize=9, leading=13, spaceAfter=7, textColor=INK))
+styles.add(ParagraphStyle(name='Copy', fontName='Helvetica', fontSize=10, leading=15, spaceAfter=8, textColor=INK))
 styles.add(ParagraphStyle(name='Cell', parent=styles['Copy'], fontSize=8, leading=11, spaceAfter=0))
-styles.add(ParagraphStyle(name='Source', fontName='Courier', fontSize=6.4, leading=8.2, spaceAfter=8))
+styles.add(ParagraphStyle(name='Source', fontName='Courier', fontSize=6.7, leading=8.6, spaceAfter=8))
 styles.add(ParagraphStyle(name='Caption', parent=styles['Copy'], fontSize=8, alignment=TA_CENTER, textColor=GREEN))
 for name in ('Heading1', 'Heading2', 'Heading3'):
     styles[name].textColor = GREEN
@@ -69,7 +70,7 @@ def diagram(kind):
         box(d,435,165,155,110,'MongoDB replica set',['Users / nodes / slots','Reservations / audit','Atomic transactions'])
         arrow(d,180,270,225,240); arrow(d,180,135,225,195); arrow(d,390,220,435,220)
         d.add(String(190,294,'REST / JWT',fontSize=9,fillColor=GREEN))
-        d.add(String(205,38,'Both clients use the API; neither connects directly to MongoDB.',fontSize=9,textAnchor='middle',fillColor=INK))
+        d.add(String(300,38,'Both clients use the API; neither connects directly to MongoDB.',fontSize=9,textAnchor='middle',fillColor=INK))
     elif kind=='use-cases':
         d.add(Rect(175,12,415,336,fillColor=None,strokeColor=GREEN))
         d.add(String(380,333,'Solara system boundary',textAnchor='middle',fontName='Helvetica-Bold',fontSize=10,fillColor=GREEN))
@@ -109,11 +110,20 @@ def diagram(kind):
     return d
 
 story=[]
-story.extend([Spacer(1,55),para('SOLARA','CoverTitle'),para('Smart Solar Microgrid<br/>Trading System','CoverTitle'),para('SE4040 - Enterprise Application Development','Heading2'),Spacer(1,20)])
+story.extend([Spacer(1,62),para('SOLARA','CoverTitle'),
+              para('Smart Solar Microgrid','CoverTitle'),para('Trading System','CoverTitle'),
+              Spacer(1,12),para('Technical Project Report','Heading2'),
+              para('SE4040 | Enterprise Application Development'),
+              para('BSc (Hons) in Information Technology - Software Engineering'),Spacer(1,30)])
 for member in ['IT22264220 - Kojithan P.Y','IT22172600 - Baskaran V','IT22223876 - Nishara T']:
     story.append(para(member))
-story += [Spacer(1,25),para('Repository: https://github.com/EADSE4040/EAD---SE4040'),para('Generated: '+datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')),
-          para('Evidence report. Open verification and contribution items are identified explicitly. Complete those items before submission.'),PageBreak()]
+story += [Spacer(1,28),para('30 September 2026'),
+          para('[Project repository](https://github.com/EADSE4040/EAD---SE4040)'),PageBreak()]
+story.append(para('Contents','Heading1'))
+toc=TableOfContents()
+toc.levelStyles=[ParagraphStyle(name='TOCChapter',fontName='Helvetica',fontSize=10,leading=16,spaceBefore=6,leftIndent=0,firstLineIndent=0),
+                 ParagraphStyle(name='TOCSection',fontName='Helvetica',fontSize=9,leading=13,leftIndent=15,firstLineIndent=0)]
+story.extend([toc,PageBreak()])
 
 diagram_index=0
 def markdown(filename):
@@ -122,7 +132,24 @@ def markdown(filename):
     i=0
     while i<len(lines):
         line=lines[i].strip()
-        if line.startswith('```'):
+        if line.startswith('[diagram:'):
+            kind=line[len('[diagram:'):-1]
+            captions={'architecture':'Figure 1. Client-server architecture and central service boundary.',
+                      'use-cases':'Figure 2. Actor responsibilities and supported use cases.',
+                      'data-flow':'Figure 3. Reservation processing and persistent data stores.',
+                      'database-model':'Figure 4. MongoDB collections and reference relationships.'}
+            story.extend([diagram(kind),para(captions[kind],'Caption')])
+        elif line=='[verification]':
+            markdown('docs/report-verification.md')
+        elif line=='[contributions]':
+            markdown('docs/contributions.md')
+        elif line=='[screenshots]':
+            screenshots()
+        elif line=='[references]':
+            references()
+        elif line=='[source]':
+            sources()
+        elif line.startswith('```'):
             language=line[3:]; code=[]; i+=1
             while i<len(lines) and not lines[i].startswith('```'):
                 code.append(lines[i]); i+=1
@@ -141,63 +168,105 @@ def markdown(filename):
                 i+=1
             if rows:
                 count=max(map(len,rows)); rows=[r+[para('','Cell')]*(count-len(r)) for r in rows]
-                table=Table(rows,colWidths=[480/count]*count,repeatRows=1,hAlign='LEFT')
+                widths={2:[150,330],3:[120,105,255]}.get(count,[480/count]*count)
+                if filename=='docs/contributions.md': widths=[125,230,125]
+                table=Table(rows,colWidths=widths,repeatRows=1,hAlign='LEFT')
                 table.setStyle(TableStyle([('BACKGROUND',(0,0),(-1,0),PALE),('VALIGN',(0,0),(-1,-1),'TOP'),('GRID',(0,0),(-1,-1),0.4,colors.HexColor('#ccd8ce')),('LEFTPADDING',(0,0),(-1,-1),7),('RIGHTPADDING',(0,0),(-1,-1),7),('TOPPADDING',(0,0),(-1,-1),7),('BOTTOMPADDING',(0,0),(-1,-1),7)]))
                 story.extend([table,Spacer(1,10)])
             continue
         elif line.startswith('#'):
             level=len(line)-len(line.lstrip('#'))
-            story.append(para(line.lstrip('#').strip(),'Heading'+str(min(level,3))))
+            title=line.lstrip('#').strip()
+            if filename=='docs/report.md' and level==1 and len(story)>1 and not isinstance(story[-1],PageBreak):
+                story.append(PageBreak())
+            if filename=='docs/contributions.md':
+                if level==1:
+                    i+=1
+                    continue
+                level=3
+            story.append(para(title,'Heading'+str(min(level,3))))
         elif line:
             line=re.sub(r'^- \[[ x]\] ', '- ',line)
             story.append(para(line))
         i+=1
 
-markdown('docs/design.md')
-story += [para('Database relationships','Heading2'),diagram('database-model'),PageBreak()]
-for filename in ['docs/verification.md','docs/contributions.md','docs/deployment/iis.md','docs/submission.md']:
-    markdown(filename); story.append(PageBreak())
-story.append(para('Captured deployment and persistence records','Heading1'))
-for name in ['iis-configuration.json','deployment.json','android-persistence.json','android-workflow.json']:
-    evidence=ROOT/'docs/evidence'/name
-    if evidence.exists():
-        story.append(para(name,'Heading2'))
-        record=json.loads(evidence.read_text(encoding='utf-8-sig'))
-        story.append(Preformatted(json.dumps(record,indent=2,ensure_ascii=True),styles['Source'],maxLineLength=112))
-story.append(PageBreak())
-story.append(para('Application and deployment screenshots','Heading1'))
-for screenshot in sorted((ROOT/'docs/screenshots').glob('*.png')):
-    story.append(para(screenshot.stem.replace('-',' ').title(),'Heading2'))
-    with PILImage.open(screenshot) as im: width,height=im.size
-    ratio=min(480/width,510/height)
-    story.append(Image(str(screenshot),width=width*ratio,height=height*ratio))
-    story.append(para('Actual captured application/evidence screen. Demonstration records are synthetic.','Caption'))
-    story.append(PageBreak())
-story.append(para('References','Heading1'))
-readme=(ROOT/'README.md').read_text(encoding='utf-8-sig')
-for line in readme.split('## References',1)[-1].splitlines():
-    if line.strip(): story.append(para(line.strip()))
-story.append(PageBreak())
-story.append(para('Source code appendix','Heading1'))
-story.append(para('Readable source text follows. Generated files, dependencies, secrets and build outputs are excluded. Long lines are wrapped for the page.'))
-excluded={'.git','.tools','node_modules','bin','obj','build','dist','.gradle','artifacts'}
-extensions={'.cs','.java','.jsx','.js','.css','.xml','.gradle','.csproj'}
-for source in sorted(ROOT.rglob('*')):
-    relative=source.relative_to(ROOT)
-    if source.suffix not in extensions or any(part in excluded for part in relative.parts) or not source.is_file(): continue
-    story.append(para(relative.as_posix(),'Heading3'))
-    wrapped=[]
-    for line in source.read_text(encoding='utf-8-sig').splitlines():
-        wrapped.extend(textwrap.wrap(clean(line.expandtabs(4)),width=112,replace_whitespace=False,drop_whitespace=False) or [''])
-    story.append(Preformatted('\n'.join(wrapped),styles['Source']))
+def screenshots():
+    # Place two portrait captures on a page; keep each desktop capture with its caption.
+    mobile=[]
+    desktop=[]
+    for screenshot in sorted((ROOT/'docs/screenshots').glob('*.png')):
+        with PILImage.open(screenshot) as im: width,height=im.size
+        (mobile if height>width else desktop).append((screenshot,width,height))
+    number=1
+    for offset in range(0,len(mobile),2):
+        cells=[]
+        for shot,width,height in mobile[offset:offset+2]:
+            scale=min(220/width,450/height)
+            title=shot.stem.replace('android-','').replace('-',' ').capitalize()
+            cells.append([Image(str(shot),width=width*scale,height=height*scale),
+                          Spacer(1,10),para(f'Figure A{number}. Android: {title}.','Caption')])
+            number+=1
+        if len(cells)==1: cells.append('')
+        table=Table([cells],colWidths=[240,240])
+        table.setStyle(TableStyle([('VALIGN',(0,0),(-1,-1),'TOP')]))
+        story.extend([table,Spacer(1,12),para('Captured application state using synthetic demonstration data.','Caption'),PageBreak()])
+    for shot,width,height in desktop:
+        scale=min(480/width,510/height)
+        title=shot.stem.replace('-',' ').capitalize()
+        story.extend([Image(str(shot),width=width*scale,height=height*scale),Spacer(1,10),
+                      para(f'Figure A{number}. {title}.','Caption'),PageBreak()])
+        number+=1
+
+def references():
+    # Retain stable primary references and their visible URLs for a printable report.
+    readme=(ROOT/'README.md').read_text(encoding='utf-8-sig')
+    for i,line in enumerate(readme.split('## References',1)[-1].splitlines()):
+        match=re.search(r'\[([^]]+)\]\((https?://[^)]+)\)',line)
+        if match:
+            title,url=match.groups()
+            story.append(para(title,'Heading3'))
+            story.append(para(f'[{url}]({url})'))
+    story.append(para('SE4040 Assignment 1 (2026), Smart Solar Microgrid Trading System. Module assignment brief, published 24 August 2026.'))
+
+def sources():
+    # Include readable source while excluding generated output and local secrets.
+    story.append(para('The following listing contains application source as text. Dependencies, generated files, local credentials and build artifacts are excluded. Long lines are wrapped to fit the page.'))
+    excluded={'.git','.tools','node_modules','bin','obj','build','dist','.gradle','artifacts','tmp','output','.codex','.agents'}
+    extensions={'.cs','.java','.jsx','.js','.css','.xml','.gradle','.csproj'}
+    for source in sorted(ROOT.rglob('*')):
+        relative=source.relative_to(ROOT)
+        if source.suffix not in extensions or any(part in excluded for part in relative.parts) or not source.is_file(): continue
+        story.append(para(relative.as_posix(),'Heading3'))
+        wrapped=[]
+        for line in source.read_text(encoding='utf-8-sig').splitlines():
+            wrapped.extend(textwrap.wrap(clean(line.expandtabs(4)),width=108,replace_whitespace=False,drop_whitespace=False) or [''])
+        story.append(Preformatted('\n'.join(wrapped),styles['Source']))
+
+markdown('docs/report.md')
 
 def footer(canvas,doc):
-    canvas.saveState(); canvas.setStrokeColor(GREEN); canvas.line(54,42,A4[0]-54,42)
+    # Keep navigation consistent without placing technical status text in the footer.
+    canvas.saveState()
+    if doc.page>1:
+        canvas.setFont('Helvetica',8); canvas.setFillColor(GREEN)
+        canvas.drawString(54,A4[1]-30,'SOLARA / TECHNICAL PROJECT REPORT')
+    canvas.setStrokeColor(colors.HexColor('#ccd8ce')); canvas.line(54,42,A4[0]-54,42)
     canvas.setFont('Helvetica',8); canvas.setFillColor(INK)
-    canvas.drawString(54,29,'SOLARA | SE4040 | Project evidence and source')
+    canvas.drawString(54,29,'SE4040  |  September 2026')
     canvas.drawRightString(A4[0]-54,29,str(doc.page)); canvas.restoreState()
 
+class ReportDocument(SimpleDocTemplate):
+    # Resolve a clickable contents table and PDF outline during the multi-pass build.
+    def afterFlowable(self,flowable):
+        if isinstance(flowable,Paragraph) and flowable.style.name == 'Heading1':
+            text=flowable.getPlainText()
+            if text=='Contents' or text=='Technical Project Report': return
+            level=0 if flowable.style.name=='Heading1' else 1
+            key='section-'+str(self.seq.nextf('section'))
+            self.canv.bookmarkPage(key)
+            self.notify('TOCEntry',(level,text,self.page,key))
+
 pdf=OUT/'Solara-SE4040-Report.pdf'
-doc=SimpleDocTemplate(str(pdf),pagesize=A4,leftMargin=54,rightMargin=54,topMargin=48,bottomMargin=58,title='Solara - SE4040 Project Report',author='Kojithan P.Y; Baskaran V; Nishara T')
-doc.build(story,onFirstPage=footer,onLaterPages=footer)
+doc=ReportDocument(str(pdf),pagesize=A4,leftMargin=54,rightMargin=54,topMargin=52,bottomMargin=58,title='Solara - Technical Project Report',author='Kojithan P.Y; Baskaran V; Nishara T')
+doc.multiBuild(story,onFirstPage=footer,onLaterPages=footer)
 print('Generated '+str(pdf))
