@@ -63,7 +63,8 @@ try
     await new DatabaseInitializer(db, config, NullLogger<DatabaseInitializer>.Instance).StartAsync(default);
     var p = await accounts.Register(new RegisterRequest("199812345678", "Test Prosumer", "prosumer@example.test",
         "Independent-Test-Pass!", "0771234567", "Test address"), false, default);
-    Check(p.Status == "Pending" && p.Id == p.Nic, "NIC primary key and pending registration");
+    Check(p.Status == "Pending" && p.Id == p.Nic && p.Role == Roles.Prosumer,
+        "Registration creates a pending prosumer with NIC primary key");
     await Reject(() => accounts.Login(new LoginRequest(p.Email, "Independent-Test-Pass!"), default), 403, "Pending account cannot log in");
     await Reject(() => accounts.Register(new RegisterRequest(p.Id, "Duplicate", p.Email, "Independent-Test-Pass!", "0771234567", "Address"), true, default), 409, "Duplicate NIC/email is rejected");
     await accounts.SetStatus(p.Id, "Active", "admin", default);

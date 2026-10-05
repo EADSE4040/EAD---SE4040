@@ -341,7 +341,13 @@ public final class MainActivity extends Activity {
                 }
                 try {
                   JSONObject s = (JSONObject) value;
-                  user = s.getJSONObject("user");
+                  JSONObject account = s.getJSONObject("user");
+                  String role = account.getString("role");
+                  if (!"Prosumer".equals(role) && !"GridOperator".equals(role)) {
+                    showError("Backoffice accounts use the web portal. Sign in there to manage the system.");
+                    return;
+                  }
+                  user = account;
                   api.token = s.getString("token");
                   store.saveSession(s.toString());
                   dashboard();
@@ -355,6 +361,7 @@ public final class MainActivity extends Activity {
         });
     c.addView(submit);
     c.addView(button("Create prosumer account", this::register));
+    c.addView(label("Grid Operator accounts are created by Backoffice. Use the same account on web and Android.", 14, MUTED, false));
     c.addView(button("Connection settings", this::settings));
   }
 
@@ -363,6 +370,7 @@ public final class MainActivity extends Activity {
     shell("Create your prosumer account");
     LinearLayout c = card();
     c.addView(label("Join the solar community", 23, GREEN, true));
+    c.addView(label("Register with your NIC. Backoffice must activate your account before you can sign in.", 14, MUTED, false));
     EditText nic = input(c, "National Identity Card", InputType.TYPE_CLASS_TEXT, ""),
         name = input(c, "Full name", InputType.TYPE_CLASS_TEXT, ""),
         email =
@@ -379,9 +387,16 @@ public final class MainActivity extends Activity {
                 "Password (at least 10 characters)",
                 InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD,
                 "");
+    EditText confirmPassword = input(c, "Confirm password",
+        InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD, "");
     Button submit = button("Request registration", () -> {});
     submit.setOnClickListener(
         v -> {
+          if (!password.getText().toString().equals(confirmPassword.getText().toString())) {
+            confirmPassword.setError("Passwords do not match.");
+            confirmPassword.requestFocus();
+            return;
+          }
           submit.setEnabled(false);
           call(
               "POST",

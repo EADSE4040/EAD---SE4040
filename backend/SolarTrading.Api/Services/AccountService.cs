@@ -52,6 +52,7 @@ public sealed class AccountService(MongoStore db, IConfiguration config)
             Email = input.Email.Trim().ToLowerInvariant(),
             Phone = input.Phone.Trim(),
             Address = input.Address.Trim(),
+            Role = Roles.Prosumer,
             Status = active ? "Active" : "Pending"
         };
         user.PasswordHash = hasher.HashPassword(user, input.Password);

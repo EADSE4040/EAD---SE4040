@@ -326,6 +326,19 @@ function Login({ onLogin }) {
           <p className="login-note">
             <ShieldCheck size={16} /> Access is restricted to authorized staff.
           </p>
+          <div className="account-guidance">
+            <h3>Need an account?</h3>
+            <p>
+              <strong>Backoffice & Grid Operators:</strong> Contact an existing
+              Backoffice officer to create your staff account. Grid Operators can
+              use the same account on the web and Android app.
+            </p>
+            <p>
+              <strong>Solar Prosumers:</strong> Create your account in the Android
+              app using your NIC. A Backoffice officer must activate it before
+              you can sign in on Android.
+            </p>
+          </div>
         </div>
       </section>
     </div>
@@ -1118,7 +1131,7 @@ function App() {
                   </h2>
                   <p>
                     {page === "activations"
-                      ? "Review new registrations before enabling access."
+                      ? "Activate prosumer registrations from Android before they can sign in."
                       : "Manage staff access and prosumer profiles."}
                   </p>
                 </div>
@@ -1151,7 +1164,7 @@ function App() {
                       className="btn btn-primary"
                       onClick={() =>
                         setModal({
-                          title: "Create staff account",
+                          title: "Create Backoffice or Grid Operator account",
                           fields: [
                             ["name", "Full name"],
                             ["email", "Email", "email"],

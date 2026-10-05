@@ -839,6 +839,23 @@ a:focus-visible {
   color: #97a18c;
   margin-top: 25px;
 }
+.account-guidance {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #dfe5da;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.account-guidance h3 {
+  font-size: 15px;
+  margin-bottom: 12px;
+}
+.account-guidance p {
+  margin-bottom: 12px;
+}
+.account-guidance p:last-child {
+  margin-bottom: 0;
+}
 @keyframes spin {
   to {
     transform: rotate(360deg);
