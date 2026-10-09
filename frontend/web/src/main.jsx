@@ -97,6 +97,7 @@ function Table({ headings, children }) {
 // Choose the native form control for a field specification.
 function Field({ spec, initial }) {
   const [name, label, type = "text", options] = spec;
+  const isCoordinate = name === "latitude" || name === "longitude";
   return (
     <label className={type === "textarea" ? "field wide" : "field"}>
       <span>{label}</span>
@@ -131,18 +132,8 @@ function Field({ spec, initial }) {
           defaultValue={initial ?? ""}
           required
           className="form-control"
-          step={
-            type === "number"
-              ? ["batterySlots", "maxBookings"].includes(name)
-                ? "1"
-                : "any"
-              : undefined
-          }
-          min={
-            type === "number" && !["latitude", "longitude"].includes(name)
-              ? "0.01"
-              : undefined
-          }
+          step={type === "number" ? (isCoordinate ? "any" : "1") : undefined}
+          min={type === "number" && !isCoordinate ? "1" : undefined}
           minLength={type === "password" ? 10 : undefined}
           maxLength={type === "password" ? 128 : undefined}
         />
