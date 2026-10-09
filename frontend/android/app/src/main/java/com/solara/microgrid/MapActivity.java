@@ -89,7 +89,7 @@ public final class MapActivity extends Activity implements OnMapReadyCallback {
     refresh.setOnClickListener(
         v -> {
           if (map != null) {
-            loadStations(currentLocation == null ? "/stations" : nearbyPath(currentLocation));
+            loadStations("/stations");
             if (mapLoadFailed) loadMapStyle();
             locate();
           }
@@ -162,16 +162,7 @@ public final class MapActivity extends Activity implements OnMapReadyCallback {
         });
   }
 
-  // Ask the server to calculate nearby stations using the current device coordinates.
-  private String nearbyPath(Location location) {
-    return "/stations?latitude="
-        + location.getLatitude()
-        + "&longitude="
-        + location.getLongitude()
-        + "&radiusKm=25";
-  }
-
-  // Configure the map and request location permission before nearby filtering.
+  // Configure all station markers; location permission only enables the user's position.
   @Override
   public void onMapReady(MapLibreMap readyMap) {
     map = readyMap;
@@ -247,7 +238,7 @@ public final class MapActivity extends Activity implements OnMapReadyCallback {
     component.forceLocationUpdate(currentLocation);
   }
 
-  // Start nearby lookup only when a location permission was granted.
+  // Show the user's position only when a location permission was granted.
   @Override
   public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grants) {
     super.onRequestPermissionsResult(requestCode, permissions, grants);
@@ -294,7 +285,7 @@ public final class MapActivity extends Activity implements OnMapReadyCallback {
             @Override
             public void onProviderEnabled(String provider) {}
 
-            // Explain why nearby filtering cannot be refreshed when location is disabled.
+            // Keep all stations visible when the user's location is disabled.
             @Override
             public void onProviderDisabled(String provider) {
               if (currentLocation == null) status.setText(R.string.map_location_unavailable);
@@ -317,12 +308,10 @@ public final class MapActivity extends Activity implements OnMapReadyCallback {
     }
   }
 
-  // Reload only when a new location changes the nearby search area.
+  // Update the user's position without filtering the station list.
   private void useLocation(Location location) {
-    boolean changed = currentLocation == null || currentLocation.distanceTo(location) > 100;
     currentLocation = location;
     showLocation();
-    if (changed) loadStations(nearbyPath(location));
   }
 
   // Release location callbacks on timeout and when this screen leaves the foreground.
@@ -362,21 +351,16 @@ public final class MapActivity extends Activity implements OnMapReadyCallback {
             ? R.string.map_cached
             : features.isEmpty()
                 ? R.string.map_no_nodes
-                : currentLocation == null ? R.string.map_all_nodes : R.string.map_ready);
-    if (currentLocation != null)
-      points.add(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()));
-    if (points.isEmpty()) return;
+                : R.string.map_all_nodes);
     mapView.post(
         () -> {
           if (isDestroyed() || mapView.getWidth() == 0 || mapView.getHeight() == 0) return;
-          boolean samePoint = true;
-          for (LatLng point : points) if (!point.equals(points.get(0))) samePoint = false;
-          if (samePoint) map.moveCamera(CameraUpdateFactory.newLatLngZoom(points.get(0), 13));
-          else {
-            LatLngBounds.Builder bounds = new LatLngBounds.Builder();
-            for (LatLng point : points) bounds.include(point);
-            map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 80));
-          }
+          // Keep the whole island in view, including when only one station is registered.
+          LatLngBounds.Builder bounds = new LatLngBounds.Builder();
+          bounds.include(new LatLng(9.9, 79.4));
+          bounds.include(new LatLng(5.8, 82.0));
+          for (LatLng point : points) bounds.include(point);
+          map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 80));
         });
   }
 

@@ -482,10 +482,22 @@ public final class MainActivity extends Activity {
         new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, statuses));
     for (int i = 0; i < statuses.length; i++)
       if (statuses[i].equals(statusFilter)) spinner.setSelection(i);
+    spinner.setOnItemSelectedListener(
+        new AdapterView.OnItemSelectedListener() {
+          @Override
+          public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            String selected = position == 0 ? "" : statuses[position];
+            if (!selected.equals(statusFilter))
+              bookings(selected, query.getText().toString().trim());
+          }
+
+          @Override
+          public void onNothingSelected(AdapterView<?> parent) {}
+        });
     filter.addView(spinner);
     filter.addView(
         button(
-            "Apply filters",
+            "Search",
             () ->
                 bookings(
                     spinner.getSelectedItemPosition() == 0
