@@ -26,7 +26,7 @@ The local parent directory is the Git repository root. Its name is not included 
 - [ ] Mobile reservations (9): create/update/cancel requests and a summary after each action.
 - [ ] Booking views (10): current/pending bookings, history, filters, pending reservation dashboard, approved future reservation counts from the API.
 - [ ] Operator and maps (7): QR scan verified by server, completion of energy transfer, nearby stations from stored coordinates, station details on selection.
-- [ ] Integrations (12): both clients use the hosted API; SQLite login/reference persistence; Google Maps; QR scanning and server verification.
+- [ ] Integrations (12): both clients use the hosted API; SQLite login/reference persistence; Google Maps (rubric requirement; current implementation uses OpenStreetMap/MapLibre instead, lecturer acceptance remains unconfirmed); QR scanning and server verification.
 
 ## API business-rule verification plan
 

@@ -7,7 +7,7 @@
 - Include source code as text in the report, not code screenshots. `scripts/package-submission.ps1` generates a source appendix from tracked source files.
 - Record and upload a demonstration of at most five minutes; put its actual accessible link in README.
 - Verify both clients against Windows IIS and include deployment evidence.
-- Configure and demonstrate Google Maps, location permission and camera-based QR scanning on an actual device or suitable emulator.
+- Demonstrate the configured OpenStreetMap/MapLibre replacement, location permission and camera-based QR scanning on an actual device or suitable emulator.
 - Independently review the AI-use restriction and disclose the actual production of the work accurately.
 - Attend the supervised viva; every member must be able to explain and modify their contribution.
 - Submit by 30 September 2026, 11:59 PM. Do not count GitHub push alone as submission.

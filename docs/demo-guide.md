@@ -1,6 +1,6 @@
 # Five-minute demonstration guide
 
-Record the final running application after IIS and Android device checks pass. Use synthetic accounts and future test slots, and show the deployed API address in each client. Keep credentials, JWTs, QR signing keys and Maps API keys out of the recording.
+Record the final running application after IIS and Android device checks pass. Use synthetic accounts and future test slots, and show the deployed API address in each client. Keep credentials, JWTs and QR signing keys out of the recording.
 
 | Time | Demonstration |
 |---|---|

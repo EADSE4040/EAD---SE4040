@@ -82,7 +82,7 @@ The booking view offers status filtering, text search and paging. The dashboard 
 
 ## 5.3 Maps and local persistence
 
-Google Maps plots the coordinates stored for active stations. A device location is sent to the API, which filters stations within 25 km. A recent cached location may be used immediately; a bounded location subscription requests a fresh fix. Without location access, all active stations remain available. Selecting a station opens its address, capacity, battery slots and operating schedule.
+MapLibre renders OpenStreetMap data from OpenFreeMap and plots the coordinates stored for active stations. A device location is sent to the API, which filters stations within 25 km. A recent cached location may be used immediately; a bounded location subscription requests a fresh fix. Without location access, all active stations remain available. Selecting a station opens its address, capacity, battery slots and operating schedule.
 
 Map requests carry a screen-local sequence number so an older all-station response cannot replace a newer nearby result. SQLite cache access runs on a worker thread, separate from map rendering. Cached responses are scoped to the requested area and labelled offline. The refresh control retries network and location retrieval.
 
@@ -112,7 +112,7 @@ Build success confirms compilation, not complete device behavior. A screenshot c
 
 The backend requires .NET 10 and MongoDB configured as a replica set. The web client is built with Node.js and npm. Android requires Java 17, SDK 36 and the Gradle wrapper. The Maps SDK key is supplied through the ignored maps.properties file and restricted to the application package and signing certificate.
 
-The repository includes scripts for local configuration, builds, IIS publishing and Android installation. The local assessed endpoints are http://127.0.0.1:8080/api for the service and http://127.0.0.1:8081 for the web portal. The emulator uses http://10.0.2.2:8080/api. See docs/deployment/iis.md for the complete IIS procedure and docs/deployment/google-maps.md for key setup.
+The repository includes scripts for local configuration, builds, IIS publishing and Android installation. The local assessed endpoints are http://127.0.0.1:8080/api for the service and http://127.0.0.1:8081 for the web portal. The emulator uses http://10.0.2.2:8080/api. See docs/deployment/iis.md for the complete IIS procedure and docs/deployment/openstreetmap.md for map configuration.
 
 Before a demonstration, confirm MongoDB and IIS are running, sign in from both clients and create slots with future timestamps. Old demonstration slots may have expired. Real deployments also require HTTPS certificates, restricted database access, backups and operational monitoring.
 

@@ -21,8 +21,14 @@
 
 ## Remaining external verification
 
-- Android camera scanning, completion and Google Maps verification are the remaining integration checks.
-- Google Maps needs a valid Android-restricted API key in ignored `frontend/android/maps.properties` before rebuilding.
+- Android camera scanning, completion and current OpenStreetMap/MapLibre device verification are the remaining integration checks.
+- Maps now use MapLibre/OpenFreeMap with OpenStreetMap data; no Google API key is required. Previous Google Maps screenshots do not verify the replacement.
 - The group has three confirmed members. Actual contribution details, submission ZIP owner and the accessible demo-video link are outstanding; confirm the group-size arrangement with the lecturer.
 
 Passing code/build checks do not establish those external criteria or guarantee marks. The source and instructions are prepared to support their completion.
+
+## OpenStreetMap migration — 9 October 2026
+
+- Replaced Google Maps with MapLibre Native Android 13.5.2 (OpenGL) and OpenFreeMap Liberty/OpenStreetMap data. Google Maps SDK and key configuration are no longer used.
+- Android `assembleDebug lintDebug` passed. Native station layers, marker details, location integration and lifecycle methods compile successfully.
+- Device rendering verification remains pending: initial emulator startup failed due to insufficient host RAM; the reduced-memory retry has not become responsive. Previous Google Maps screenshots do not verify this replacement.

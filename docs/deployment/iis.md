@@ -47,7 +47,7 @@ MongoDB is now installed as the automatic-start `SolaraMongo` Windows service un
 7. Bind the API site to HTTPS with a valid trusted certificate. Give its application-pool identity only the file permissions it needs. Use persistent environment/secrets configuration managed on the server.
 8. Host `artifacts/publish/web` as an IIS static site with the supplied `web.config`. The web build must contain the real HTTPS API URL; changing runtime environment variables does not rewrite compiled frontend assets.
 9. Verify `/api/health`, staff login, role authorization and a booking mutation from the web site and Android device. Ensure the actual IIS binding is reachable from the device network.
-10. Configure Android's API address and restricted Google Maps key; generate a release signing key owned by the team before release distribution.
+10. Configure Android's API address and verify the [OpenStreetMap basemap](openstreetmap.md); generate a release signing key owned by the team before release distribution.
 
 ## Evidence required
 

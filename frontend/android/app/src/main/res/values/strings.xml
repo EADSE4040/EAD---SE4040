@@ -1,12 +1,13 @@
 <resources>
     <string name="map_back">Back to Solara</string>
     <string name="map_loading">Loading nearby grid nodes…</string>
-    <string name="map_key_missing">Google Maps is not configured. Contact the administrator to enable maps.</string>
+    <string name="map_tiles_unavailable">Map background unavailable. Check your internet connection and tap Refresh.</string>
+    <string name="map_style_url" translatable="false">https://tiles.openfreemap.org/styles/liberty</string>
     <string name="map_ready">Nearby microgrid nodes · tap a marker for details</string>
     <string name="map_cached">Offline: displaying cached stations. Availability may have changed.</string>
     <string name="map_location_unavailable">Current location unavailable. Enable location and tap Refresh; all active nodes are shown until a location is available.</string>
     <string name="map_no_nodes">No active grid nodes were found in this area.</string>
     <string name="map_refresh">Refresh nearby stations</string>
-    <string name="map_all_nodes">Active grid nodes ? enable location for nearby results</string>
+    <string name="map_all_nodes">Active grid nodes · enable location for nearby results</string>
     <string name="map_session_expired">Session expired. Go back and sign in again.</string>
 </resources>

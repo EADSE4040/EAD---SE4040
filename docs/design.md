@@ -11,7 +11,7 @@ flowchart LR
     Android <-->|REST + JWT| API
     API --> Services[Account / Grid / Reservation services]
     Services --> Mongo[(MongoDB replica set)]
-    Android --> Maps[Google Maps SDK]
+    Android --> Maps[MapLibre / OpenFreeMap / OpenStreetMap]
 ```
 
 The controllers are thin adapters. Services enforce authorization-related ownership, booking time limits, account states, capacity and transfer transitions. MongoDB transactions atomically commit bookings, slot counters and audit records. Clients display server responses and never query MongoDB.
