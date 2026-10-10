@@ -1,5 +1,13 @@
 # Verification evidence
 
+## IIS configuration alignment - 10 October 2026
+
+- Found that the development API on port 5080 used the configured MongoDB Atlas database while the IIS API on port 8080 still served the earlier database. The saved user1 demo credentials succeeded only on 5080; the reported QR booking was absent from IIS.
+- Synchronized the existing IIS API pool's database and signing settings with the working source API configuration using `scripts/sync-iis-configuration.ps1`. A private backup is retained under `.tools/`; no database records were deleted or passwords reset.
+- After synchronization, the user1 demo login returned HTTP 200 through IIS. The reported booking's current signed QR returned HTTP 200 when generated and verified on either endpoint, including cross-endpoint verification.
+- Physical Samsung phone login with the existing user1 demo credentials succeeded after the sync. The native dashboard displayed Demo Consumer 1 and live counts (one pending, three approved upcoming, zero completed).
+- This verifies API login and signed QR validation. Physical camera scanning and transfer completion are separate checks; a future booking cannot complete before its scheduled slot.
+
 ## Checks completed
 
 - C# API and test-runner compilation succeeded; the final Release suite completed successfully.

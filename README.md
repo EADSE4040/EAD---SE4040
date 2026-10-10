@@ -47,6 +47,8 @@ Run `powershell -ExecutionPolicy Bypass -File scripts/enable-usb-demo-autostart.
 
 The app's **Test connection** checks the API and database without submitting a transaction. Its visible Back button and Android back gesture return detail/form screens to their parent. USB forwarding requires the cable, an authorized phone and a running laptop server; it does not provide access from other phones or over the internet. Release builds require HTTPS.
 
+If the development API's database or signing configuration changes, run `scripts/sync-iis-configuration.ps1` from administrator Windows PowerShell to update the existing `SolaraApi` IIS pool from the private source configuration. It preserves a private rollback backup, recycles only that pool, checks API/database health, and restores the old settings if health fails. Both clients must use a backend with the same database and signing configuration; pulling source files alone does not update IIS settings. Regenerate transaction QR codes after changing signing keys.
+
 ## Business rules
 
 - New reservations must start in the future, at most seven days from the server's current UTC time; exactly seven days is accepted.

@@ -1,0 +1,12 @@
+﻿{
+    "verifiedAtUtc":  "2026-10-10T12:55:28.7671018Z",
+    "iisConfigurationSync":  true,
+    "database":  "SolarTrading",
+    "databaseProvider":  "MongoDB Atlas",
+    "iisHealth":  "HTTP 200; Microsoft-IIS/10.0; database connected",
+    "user1IisLoginHttpStatus":  200,
+    "physicalPhoneUser1Login":  "passed; Demo Consumer 1 dashboard displayed",
+    "currentBookingQrVerification":  "HTTP 200 on 8080 and 5080, including cross-endpoint verification",
+    "cameraQrCompletion":  "Not verified by this login/configuration check",
+    "privateRollbackBackupRetained":  true
+}

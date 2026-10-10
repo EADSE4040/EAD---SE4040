@@ -76,7 +76,9 @@ public final class ApiClient {
                       : "Request failed (" + status + ")";
               if (result instanceof JSONObject && ((JSONObject) result).has("errors"))
                 error = ((JSONObject) result).getJSONObject("errors").toString();
-              if (status == 401) error = "Your session expired. Please sign in again.";
+              // Login rejects invalid credentials with 401; only protected requests imply expiry.
+              if (status == 401 && !"/auth/login".equals(path))
+                error = "Your session expired. Please sign in again.";
             }
           } catch (Exception e) {
             // Log the exception type only; never log credentials, tokens or request bodies.
