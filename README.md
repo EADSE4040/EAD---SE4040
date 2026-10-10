@@ -39,6 +39,14 @@ For this already-provisioned workspace, `powershell -ExecutionPolicy Bypass -Fil
 
 Both clients expose meaningful API errors. Android encrypts its SQLite session with Android Keystore; raw passwords are never persisted locally. Cached station data is labelled offline and never authorizes bookings or transfers.
 
+### Physical Android phone over USB
+
+Install the debug APK, enable USB debugging and authorize this laptop on the phone. Keep IIS and MongoDB running. Run `powershell -ExecutionPolicy Bypass -File scripts/connect-android-usb.ps1` to forward IIS port 8080 and configure the current debug app with `http://127.0.0.1:8080/api`.
+
+Run `powershell -ExecutionPolicy Bypass -File scripts/enable-usb-demo-autostart.ps1` once to start the USB reconnect watcher now and at this Windows user's future sign-ins. It restores the forwarding rule after a cable reconnect or ADB restart. Logs are private under `.tools/usb-demo-watcher.log`. With several physical phones attached, run `scripts/start-usb-demo.ps1 -Stop`, then `scripts/start-usb-demo.ps1 -Serial DEVICE_SERIAL` to select one. Use `scripts/enable-usb-demo-autostart.ps1 -Disable` to remove autostart and stop the watcher.
+
+The app's **Test connection** checks the API and database without submitting a transaction. Its visible Back button and Android back gesture return detail/form screens to their parent. USB forwarding requires the cable, an authorized phone and a running laptop server; it does not provide access from other phones or over the internet. Release builds require HTTPS.
+
 ## Business rules
 
 - New reservations must start in the future, at most seven days from the server's current UTC time; exactly seven days is accepted.

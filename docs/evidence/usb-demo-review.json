@@ -1,0 +1,15 @@
+﻿{
+    "verifiedAtUtc":  "2026-10-10T11:27:45.6446430Z",
+    "deviceModel":  "Samsung SM-S908E",
+    "androidBuild":  "assembleDebug passed",
+    "androidLintErrors":  0,
+    "usbApi":  "http://127.0.0.1:8080/api",
+    "physicalPhoneHealth":  "Server and database connected via app Test connection",
+    "sessionRestoredAfterUpdate":  true,
+    "visibleBack":  "Profile to Account tools; Bookings to Overview passed",
+    "androidSystemBack":  "Account tools to Overview passed",
+    "usbRecovery":  "Removed only tcp:8080 reverse mapping; watcher restored it within the 3-second polling interval",
+    "windowsSignInAutostart":  "Enabled for current Windows user via SolaraUsbDemo Run entry",
+    "apk":  "artifacts/Solara-USB-Demo-debug.apk",
+    "cameraQrCompletion":  "Not confirmed by this connection/navigation verification"
+}

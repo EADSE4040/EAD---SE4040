@@ -4,6 +4,10 @@ import android.app.Activity;
 import java.io.ByteArrayOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
+import javax.net.ssl.SSLException;
+import android.util.Log;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -75,7 +79,23 @@ public final class ApiClient {
               if (status == 401) error = "Your session expired. Please sign in again.";
             }
           } catch (Exception e) {
-            error = "Could not reach the server. Check your connection and API address.";
+            // Log the exception type only; never log credentials, tokens or request bodies.
+            Log.w("SolaraApi", "Request failed: " + e.getClass().getSimpleName());
+            if (e instanceof SocketTimeoutException) {
+              error = "The server took too long to respond. Check the connection and try again.";
+            } else if (e instanceof UnknownHostException) {
+              error = "The server address could not be found. Check Connection settings and your network.";
+            } else if (e instanceof SSLException) {
+              error = "The secure connection failed. Check the server's HTTPS certificate.";
+            } else if (status > 0) {
+              error = "The server returned an unreadable response. Check the API address in Connection settings.";
+            } else if (baseUrl.startsWith("http://127.0.0.1:") || baseUrl.startsWith("http://localhost:")) {
+              error = "USB server connection is unavailable. Keep the phone connected and the laptop's USB demo helper running. Then use Test connection.";
+            } else if (baseUrl.startsWith("http://10.0.2.2:")) {
+              error = "This address is for an Android emulator. For a USB-connected phone, select the laptop connection in Connection settings.";
+            } else {
+              error = "Could not reach the server. Check your network and the API address in Connection settings.";
+            }
           } finally {
             if (connection != null) connection.disconnect();
           }

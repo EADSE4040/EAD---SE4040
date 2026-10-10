@@ -41,6 +41,7 @@ public final class MainActivity extends Activity {
   private ProgressBar progress;
   private String page = "Overview";
   private int generation = 0;
+  private Runnable backAction;
   private final DateTimeFormatter timeFormat =
       DateTimeFormatter.ofPattern("dd MMM yyyy, HH:mm").withZone(ZoneId.systemDefault());
 
@@ -51,8 +52,22 @@ public final class MainActivity extends Activity {
     getWindow().getDecorView().setSystemUiVisibility(
         View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
     store = new LocalStore(this);
-    String url = getPreferences(MODE_PRIVATE).getString("api", "http://10.0.2.2:8080/api");
+    String defaultUrl = android.os.Build.FINGERPRINT.startsWith("generic")
+            || android.os.Build.HARDWARE.contains("ranchu")
+            || android.os.Build.HARDWARE.contains("goldfish")
+        ? "http://10.0.2.2:8080/api" : "http://127.0.0.1:8080/api";
+    String url = getPreferences(MODE_PRIVATE).getString("api", defaultUrl);
+    // The local USB helper may configure only the loopback IIS endpoint in debug builds.
+    if (BuildConfig.DEBUG && "http://127.0.0.1:8080/api".equals(getIntent().getStringExtra("solara_usb_api"))) {
+      if (!url.equals("http://127.0.0.1:8080/api")) store.clearSession();
+      url = "http://127.0.0.1:8080/api";
+      getPreferences(MODE_PRIVATE).edit().putString("api", url).apply();
+    }
     api = new ApiClient(this, url);
+    if (android.os.Build.VERSION.SDK_INT >= 33) {
+      getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
+          android.window.OnBackInvokedDispatcher.PRIORITY_DEFAULT, this::goBack);
+    }
     try {
       String saved = store.readSession();
       if (saved != null) {
@@ -79,6 +94,19 @@ public final class MainActivity extends Activity {
             }
           });
     }
+  }
+
+  // Reuse the same destination for the visible Back button and Android back gestures.
+  private void goBack() {
+    if (backAction != null) backAction.run();
+    else finish();
+  }
+
+  // Legacy fallback only; Android 33+ gestures use OnBackInvokedDispatcher above.
+  @android.annotation.SuppressLint("GestureBackNavigation")
+  @Override
+  public void onBackPressed() {
+    goBack();
   }
 
   // Release network, database and rendering resources owned by this activity.
@@ -201,7 +229,13 @@ public final class MainActivity extends Activity {
 
   // Rebuild navigation and invalidate callbacks from the previous screen.
   private void shell(String title) {
+    shell(title, null);
+  }
+
+  // Give each detail/form screen an explicit parent without retaining stale views.
+  private void shell(String title, Runnable parent) {
     generation++;
+    backAction = parent;
     page = title;
     root = new LinearLayout(this);
     root.setOrientation(LinearLayout.VERTICAL);
@@ -219,6 +253,17 @@ public final class MainActivity extends Activity {
     header.setOrientation(LinearLayout.VERTICAL);
     header.setPadding(dp(22), dp(15), dp(22), dp(15));
     header.setBackgroundColor(GREEN);
+    if (parent != null) {
+      Button back = new Button(this);
+      back.setText("\u2039 Back");
+      back.setAllCaps(false);
+      back.setContentDescription("Go back");
+      back.setTextColor(Color.WHITE);
+      back.setBackgroundColor(Color.TRANSPARENT);
+      back.setLayoutParams(new LinearLayout.LayoutParams(dp(100), dp(48)));
+      back.setOnClickListener(v -> goBack());
+      header.addView(back);
+    }
     header.addView(label("☀  solara.", 27, Color.WHITE, true));
     header.addView(label(title, 13, Color.rgb(209, 226, 202), false));
     root.addView(header);
@@ -363,11 +408,12 @@ public final class MainActivity extends Activity {
     c.addView(button("Create prosumer account", this::register));
     c.addView(label("Grid Operator accounts are created by Backoffice. Use the same account on web and Android.", 14, MUTED, false));
     c.addView(button("Connection settings", this::settings));
+    c.addView(button("Test connection", this::testConnection));
   }
 
   // Collect NIC and profile details, then submit a pending activation request.
   private void register() {
-    shell("Create your prosumer account");
+    shell("Create your prosumer account", this::login);
     LinearLayout c = card();
     c.addView(label("Join the solar community", 23, GREEN, true));
     c.addView(label("Register with your NIC. Backoffice must activate your account before you can sign in.", 14, MUTED, false));
@@ -470,7 +516,7 @@ public final class MainActivity extends Activity {
 
   // Show search and status controls for the reservation list.
   private void bookings(String statusFilter, String search) {
-    shell("Energy bookings");
+    shell("Energy bookings", this::dashboard);
     LinearLayout filter = card();
     filter.addView(label("Search your bookings", 20, GREEN, true));
     EditText query = input(filter, "Booking ID, NIC or station", InputType.TYPE_CLASS_TEXT, search);
@@ -595,7 +641,8 @@ public final class MainActivity extends Activity {
 
   // Load available server slots and submit a new or modified reservation.
   private void bookingForm(JSONObject booking) {
-    shell(booking == null ? "Reserve energy" : "Modify reservation");
+    shell(booking == null ? "Reserve energy" : "Modify reservation",
+        () -> { if (booking == null) bookings("", ""); else summary(booking); });
     content.addView(label("Choose your trading window", 23, GREEN, true));
     call(
         "GET",
@@ -713,7 +760,7 @@ public final class MainActivity extends Activity {
 
   // Display the server-confirmed reservation state after an operation.
   private void summary(JSONObject b) {
-    shell("Reservation summary");
+    shell("Reservation summary", () -> bookings("", ""));
     LinearLayout c = card();
     c.addView(label(text(b, "status"), 15, GREEN, true));
     c.addView(label(text(b, "stationName"), 24, GREEN, true));
@@ -738,7 +785,7 @@ public final class MainActivity extends Activity {
 
   // Render the approved reservation payload as a scannable QR bitmap.
   private void qr(JSONObject booking) {
-    shell("Transaction QR");
+    shell("Transaction QR", () -> summary(booking));
     call(
         "GET",
         "/reservations/" + text(booking, "id") + "/qr",
@@ -776,7 +823,7 @@ public final class MainActivity extends Activity {
 
   // Display profile, maps, operator tools and sign-out navigation.
   private void more() {
-    shell("Account & tools");
+    shell("Account & tools", this::dashboard);
     LinearLayout c = card();
     c.addView(label(text(user, "name"), 23, GREEN, true));
     c.addView(label(text(user, "email"), 13, MUTED, false));
@@ -809,12 +856,13 @@ public final class MainActivity extends Activity {
                                   }))
                       .show()));
     c.addView(button("Connection settings", this::settings));
+    c.addView(button("Test connection", this::testConnection));
     c.addView(button("Sign out", this::logout));
   }
 
   // Edit the signed-in profile or request account deactivation through the API.
   private void profile() {
-    shell("Edit profile");
+    shell("Edit profile", this::more);
     call(
         "GET",
         "/auth/me",
@@ -886,7 +934,7 @@ public final class MainActivity extends Activity {
 
   // Verify the scanned or entered payload before enabling transfer completion.
   private void verifyForm(String scanned) {
-    shell("Verify energy transfer");
+    shell("Verify energy transfer", this::more);
     LinearLayout c = card();
     c.addView(label("Verify with the server", 23, GREEN, true));
     EditText code = input(c, "Transaction QR payload", InputType.TYPE_CLASS_TEXT, scanned);
@@ -913,7 +961,7 @@ public final class MainActivity extends Activity {
 
   // Confirm measured energy and record a single completion through the API.
   private void transfer(JSONObject booking, String qr) {
-    shell("Finalize transfer");
+    shell("Finalize transfer", this::more);
     LinearLayout c = card();
     c.addView(label(text(booking, "prosumerName"), 23, GREEN, true));
     c.addView(
@@ -1007,8 +1055,26 @@ public final class MainActivity extends Activity {
                         logout();
                       }
                       dialog.dismiss();
+                      testConnection();
                     }));
     dialog.show();
+  }
+
+  // Test server/database reachability without retrying a booking or exposing credentials.
+  private void testConnection() {
+    call("GET", "/health", null, (value, error, status) -> {
+      if (error != null) { showError(error); return; }
+      JSONObject health = value instanceof JSONObject ? (JSONObject) value : new JSONObject();
+      if (!"healthy".equals(health.optString("status"))
+          || !"connected".equals(health.optString("database"))) {
+        showError("The server is reachable, but its database is unavailable. Please try again later.");
+        return;
+      }
+      message.setVisibility(View.GONE);
+      new AlertDialog.Builder(this).setTitle("Connection ready")
+          .setMessage("Server and database are connected.\n\n" + api.baseUrl)
+          .setPositiveButton("OK", null).show();
+    });
   }
 
   // Clear the local session and return to the sign-in screen.
