@@ -13,6 +13,7 @@ foreach ($file in @($installer,$configPath,(Join-Path $root 'api/web.config'),(J
 $signature=Get-AuthenticodeSignature -LiteralPath $installer
 if ($signature.Status -ne 'Valid' -or $signature.SignerCertificate.Subject -notmatch 'O=Microsoft Corporation') { throw 'Installer Microsoft signature verification failed.' }
 $config=Get-Content -LiteralPath $configPath -Raw | ConvertFrom-Json
+$base=Get-Content -LiteralPath (Join-Path $repo 'backend/SolarTrading.Api/appsettings.json') -Raw | ConvertFrom-Json
 if (!$config.Mongo.ConnectionString -or !$config.Jwt.Key -or !$config.Qr.Key) { throw 'Local configuration is incomplete.' }
 foreach ($port in @(8080,8081)) {
     if (Get-NetTCPConnection -State Listen -LocalPort $port -ErrorAction SilentlyContinue) { throw "Port $port is already occupied; existing services will not be replaced." }
@@ -40,10 +41,20 @@ try {
     $apiPool=$manager.ApplicationPools.Add('SolaraApi')
     $apiPool.ManagedRuntimeVersion=''
     $apiPool.Enable32BitAppOnWin64=$false
+    $apiPool.ProcessModel.LoadUserProfile=$true
     $webPool=$manager.ApplicationPools.Add('SolaraWeb')
     $webPool.ManagedRuntimeVersion=''
     $variables=$apiPool.GetCollection('environmentVariables')
-    $settings=@{ 'ASPNETCORE_ENVIRONMENT'='Production'; 'Mongo__ConnectionString'=$config.Mongo.ConnectionString; 'Jwt__Key'=$config.Jwt.Key; 'Qr__Key'=$config.Qr.Key; 'Cors__Origins__0'='http://127.0.0.1:8081' }
+    $settings=@{
+        'ASPNETCORE_ENVIRONMENT'='Production'
+        'Mongo__ConnectionString'=$config.Mongo.ConnectionString
+        'Mongo__Database'=$(if ($config.Mongo.Database) { $config.Mongo.Database } else { $base.Mongo.Database })
+        'Jwt__Key'=$config.Jwt.Key
+        'Jwt__Issuer'=$(if ($config.Jwt.Issuer) { $config.Jwt.Issuer } else { $base.Jwt.Issuer })
+        'Jwt__Audience'=$(if ($config.Jwt.Audience) { $config.Jwt.Audience } else { $base.Jwt.Audience })
+        'Qr__Key'=$config.Qr.Key
+        'Cors__Origins__0'='http://127.0.0.1:8081'
+    }
     # The local database already has its administrator; no bootstrap password is persisted to IIS.
     foreach ($entry in $settings.GetEnumerator()) {
         $element=$variables.CreateElement('add'); $element['name']=$entry.Key; $element['value']=$entry.Value; $variables.Add($element)
@@ -78,7 +89,7 @@ try {
 } finally { $manager.Dispose() }
 $healthy=$false
 for ($attempt=0; $attempt -lt 20; $attempt++) {
-    try { $health=Invoke-RestMethod 'http://127.0.0.1:8080/api/health'; if ($health.status -eq 'healthy') { $healthy=$true; break } } catch { Start-Sleep -Seconds 1 }
+    try { $health=Invoke-RestMethod 'http://127.0.0.1:8080/api/health' -TimeoutSec 5; if ($health.status -eq 'healthy' -and $health.database -eq 'connected') { $healthy=$true; break } } catch { Start-Sleep -Seconds 1 }
 }
 if (!$healthy) { throw 'Sites were installed but API health did not pass. Keep MongoDB running and inspect IIS/Event Viewer logs.' }
 Invoke-WebRequest 'http://127.0.0.1:8081' -UseBasicParsing | Out-Null
