@@ -253,17 +253,15 @@ public final class MainActivity extends Activity {
     header.setOrientation(LinearLayout.VERTICAL);
     header.setPadding(dp(22), dp(15), dp(22), dp(15));
     header.setBackgroundColor(GREEN);
-    if (parent != null) {
-      Button back = new Button(this);
-      back.setText("\u2039 Back");
-      back.setAllCaps(false);
-      back.setContentDescription("Go back");
-      back.setTextColor(Color.WHITE);
-      back.setBackgroundColor(Color.TRANSPARENT);
-      back.setLayoutParams(new LinearLayout.LayoutParams(dp(100), dp(48)));
-      back.setOnClickListener(v -> goBack());
-      header.addView(back);
-    }
+    Button back = new Button(this);
+    back.setText("\u2039 Back");
+    back.setAllCaps(false);
+    back.setContentDescription(parent != null ? "Go back" : "Return to previous app");
+    back.setTextColor(Color.WHITE);
+    back.setBackgroundColor(Color.TRANSPARENT);
+    back.setLayoutParams(new LinearLayout.LayoutParams(dp(100), dp(48)));
+    back.setOnClickListener(v -> goBack());
+    header.addView(back);
     header.addView(label("☀  solara.", 27, Color.WHITE, true));
     header.addView(label(title, 13, Color.rgb(209, 226, 202), false));
     root.addView(header);
@@ -799,6 +797,8 @@ public final class MainActivity extends Activity {
           LinearLayout c = card();
           c.addView(label(text(booking, "stationName"), 21, GREEN, true));
           c.addView(label("Present this code to your Grid Operator.", 13, MUTED, false));
+          c.addView(label("Server: " + api.baseUrl, 12, MUTED, false));
+          c.addView(label("Your Grid Operator must connect to this same backend.", 12, MUTED, false));
           try {
             BitMatrix bits =
                 new MultiFormatWriter().encode(payload, BarcodeFormat.QR_CODE, 600, 600);
@@ -817,6 +817,13 @@ public final class MainActivity extends Activity {
           c.addView(
               label(
                   "Valid until " + date(text((JSONObject) value, "expiresAt")), 12, MUTED, false));
+          c.addView(button("Refresh QR", () -> qr(booking)));
+          c.addView(button("Copy QR payload", () -> {
+            android.content.ClipboardManager clipboard =
+                (android.content.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+            clipboard.setPrimaryClip(android.content.ClipData.newPlainText("Solara transaction QR", payload));
+            Toast.makeText(this, "QR payload copied", Toast.LENGTH_SHORT).show();
+          }));
           c.addView(button("Back to booking", () -> summary(booking)));
         });
   }
@@ -916,6 +923,7 @@ public final class MainActivity extends Activity {
   private void scan() {
     if (!operator()) return;
     new IntentIntegrator(this)
+        .setCaptureActivity(ScanActivity.class)
         .setDesiredBarcodeFormats(IntentIntegrator.QR_CODE)
         .setPrompt("Scan the prosumer transaction QR")
         .setBeepEnabled(false)
@@ -934,10 +942,29 @@ public final class MainActivity extends Activity {
 
   // Verify the scanned or entered payload before enabling transfer completion.
   private void verifyForm(String scanned) {
+    verifyForm(scanned, true);
+  }
+
+  // Returning from completion must show the form without immediately reopening completion.
+  private void verifyForm(String scanned, boolean automaticallyVerify) {
     shell("Verify energy transfer", this::more);
     LinearLayout c = card();
     c.addView(label("Verify with the server", 23, GREEN, true));
-    EditText code = input(c, "Transaction QR payload", InputType.TYPE_CLASS_TEXT, scanned);
+    c.addView(label("Server: " + api.baseUrl, 12, MUTED, false));
+    c.addView(label("Use the same backend as the prosumer's QR screen. Separate servers cannot verify each other's QR codes.", 12, MUTED, false));
+    EditText code = input(c, "Transaction QR payload",
+        InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_FLAG_MULTI_LINE,
+        scanned);
+    code.setSingleLine(false);
+    code.setHorizontallyScrolling(false);
+    code.setMinLines(3);
+    code.setMaxLines(5);
+    code.setTextSize(12);
+    code.setTypeface(Typeface.MONOSPACE);
+    code.getLayoutParams().height = LinearLayout.LayoutParams.WRAP_CONTENT;
+    // Keep camera-decoded signatures intact; manual entry remains available on an empty form.
+    if (!scanned.isEmpty()) code.setKeyListener(null);
     Button verify = button("Verify transaction", () -> {});
     verify.setOnClickListener(
         v -> {
@@ -949,19 +976,23 @@ public final class MainActivity extends Activity {
               (value, error, status) -> {
                 verify.setEnabled(true);
                 if (error != null) {
-                  showError(error);
+                  showError(error.contains("QR signature is invalid")
+                      ? "This QR was signed by a different server, its signing key changed, or the payload was altered. Connect both apps to the same backend and refresh the prosumer's QR."
+                      : error);
                   return;
                 }
                 transfer((JSONObject) value, code.getText().toString().trim());
               });
         });
     c.addView(verify);
-    if (!scanned.isEmpty()) verify.performClick();
+    c.addView(button("Scan QR again", this::scan));
+    c.addView(button("Connection settings", this::settings));
+    if (automaticallyVerify && !scanned.isEmpty()) verify.performClick();
   }
 
   // Confirm measured energy and record a single completion through the API.
   private void transfer(JSONObject booking, String qr) {
-    shell("Finalize transfer", this::more);
+    shell("Finalize transfer", () -> verifyForm(qr, false));
     LinearLayout c = card();
     c.addView(label(text(booking, "prosumerName"), 23, GREEN, true));
     c.addView(
